@@ -1,4 +1,3 @@
-import { mdsvex } from 'mdsvex';
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
@@ -6,21 +5,19 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
 	// for more information about preprocessors
-	preprocess: [vitePreprocess(), mdsvex()],
+	preprocess: [vitePreprocess()],
 
 	kit: {
 		adapter: adapter({
-		  // Provide a fallback page name (e.g. 'index.html' or '200.html')
-		  fallback: 'index.html',
-	
-		  // 'strict: false' will ignore any routes that can't be prerendered
-		  // (or were never explicitly generated). They will rely on the fallback.
-		  // If you prefer the build to fail when it sees “dynamic” routes,
-		  // you can leave strict: true (the default) and rely solely on the fallback.
-		  strict: false
-		})
+		  pages: 'build',  // directory for built pages
+		  assets: 'build', // directory for built assets
+		  fallback: null   // if you need a fallback (like for SPAs), set it here
+		}),
+		prerender: {
+			// This tells SvelteKit to prerender every route it finds.
+			entries: ['*']
+		  },
 	},
-
 	extensions: ['.svelte', '.svx']
 };
 
