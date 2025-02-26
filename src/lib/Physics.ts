@@ -85,10 +85,17 @@ export class Physics {
     this.rocket.vx = newPos.vx;
     this.rocket.vy = newPos.vy;
 
-    // Update target position (circular orbit)
-    this.target.angle += this.target.speed;
-    this.target.x = this.width - 100 + Math.cos(this.target.angle) * this.target.radius_orbit;
-    this.target.y = 100 + Math.sin(this.target.angle) * this.target.radius_orbit;
+    // Update target position (straight line toward Earth with shallower angle)
+    // Instead of aiming directly at the center of Earth, aim at a point offset to the right
+    const targetX = this.width * 0.2; // Aim further to the right (75% of screen width)
+    const targetY = this.height;      // Still aim at bottom of screen
+    
+    // Calculate direction vector toward the offset target point
+    const targetDirection = Math.atan2(targetY - this.target.y, targetX - this.target.x);
+    
+    // Move the target along that direction
+    this.target.x += Math.cos(targetDirection) * this.target.speed * 30; // Increased speed
+    this.target.y += Math.sin(targetDirection) * this.target.speed * 30; // Increased speed
 
     // Check if the rocket is out of bounds
     const isOutOfBounds =
@@ -108,9 +115,11 @@ export class Physics {
   }
 
   reset() {
-    this.rocket.x = this.width / 2;
-    this.rocket.y = this.height - 20;
-    this.target.angle = 0;
+    this.rocket.x = 50;  // Use a fixed position that matches the initial setup
+    this.rocket.y = this.height - 50;
+    // Reset the target to start from the top and slightly to the right
+    this.target.x = this.width - 50;  
+    this.target.y = 50;
     this.u = [0, 0, 0, 0]; // Reset state
     this.t = 0; // Reset simulation time
   }
