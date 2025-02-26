@@ -2,6 +2,8 @@ export interface Rocket {
   x: number;
   y: number;
   size: number;
+  vx: number;
+  vy: number;
 }
 
 export interface Target {
@@ -26,7 +28,9 @@ export class Physics {
       this.rocket = {
           x: 50,
           y: height - 50,
-          size: 20
+          size: 20,
+          vx: 0,
+          vy: 0
       };
 
       this.target = {
@@ -41,8 +45,14 @@ export class Physics {
 
   update(angle: number, speed: number): boolean {
       const radians = angle * Math.PI / 180;
-      this.rocket.x += Math.cos(radians) * speed;
-      this.rocket.y -= Math.sin(radians) * speed;
+      
+      // Calculate and store velocity components
+      this.rocket.vx = Math.cos(radians) * speed;
+      this.rocket.vy = -Math.sin(radians) * speed;
+      
+      // Update position using the velocity
+      this.rocket.x += this.rocket.vx;
+      this.rocket.y += this.rocket.vy;
       
       // Update target position
       this.target.angle += this.target.speed;
@@ -59,6 +69,8 @@ export class Physics {
   reset() {
       this.rocket.x = this.width / 2;
       this.rocket.y = this.height - 20;
+      this.rocket.vx = 0;
+      this.rocket.vy = 0;
       this.target.angle = 0;
   }
 }

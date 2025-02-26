@@ -3,7 +3,7 @@
     import { Physics } from './Physics';
     
     // Parameters controlled by sliders
-    let angle = 45; // Initial angle in degrees
+    let angle = 270; // Changed to 90 degrees to point straight up initially
     let speed = 5;  // Initial speed
     
     // Canvas dimensions
@@ -63,24 +63,91 @@
       // Draw rocket
       ctx.save();
       ctx.translate(physics.rocket.x, physics.rocket.y);
-      ctx.rotate(angle * Math.PI / 180);
       
-      // Rocket body
-      ctx.fillStyle = '#ff4444';
+      // Calculate flight angle from velocity
+      let flightAngle = angle;
+      
+      if (isRunning) {
+        const vx = physics.rocket.vx;
+        const vy = physics.rocket.vy;
+        
+        // Only calculate angle if we have meaningful velocity
+        if (Math.abs(vx) > 0.001 || Math.abs(vy) > 0.001) {
+          flightAngle = Math.atan2(vy, vx) * 180 / Math.PI;
+        }
+      }
+      
+      // Rotate the context according to the flight angle
+      ctx.rotate(flightAngle * Math.PI / 180);
+      
+      const rocketSize = physics.rocket.size;
+      const rocketLength = rocketSize * 2.5;
+      
+      // Rocket body - reposition so tip aligns with direction of travel
+      ctx.fillStyle = '#f5f5f5'; // White/silver rocket body
       ctx.beginPath();
-      ctx.moveTo(-physics.rocket.size/2, physics.rocket.size/2);
-      ctx.lineTo(physics.rocket.size/2, 0);
-      ctx.lineTo(-physics.rocket.size/2, -physics.rocket.size/2);
-      ctx.lineTo(-physics.rocket.size/2, physics.rocket.size/2);
+      ctx.rect(-rocketLength, -rocketSize/3, rocketLength * 0.75, rocketSize * 2/3);
+      ctx.fill();
+      
+      // Nose cone - pointing in direction of travel (right)
+      ctx.fillStyle = '#ff4444'; // Red nose cone
+      ctx.beginPath();
+      ctx.moveTo(0, 0); // Tip at origin, pointing right (direction of rotation)
+      ctx.lineTo(-rocketSize/2, -rocketSize/3);
+      ctx.lineTo(-rocketSize/2, rocketSize/3);
+      ctx.closePath();
       ctx.fill();
       
       // Rocket fins
-      ctx.fillStyle = '#cc2222';
+      ctx.fillStyle = '#cc2222'; // Darker red fins
+      
+      // Top fin
       ctx.beginPath();
-      ctx.moveTo(-physics.rocket.size/2, physics.rocket.size/3);
-      ctx.lineTo(-physics.rocket.size, physics.rocket.size/2);
-      ctx.lineTo(-physics.rocket.size/2, -physics.rocket.size/3);
+      ctx.moveTo(-rocketLength, -rocketSize/3);
+      ctx.lineTo(-rocketLength - rocketSize/2, -rocketSize/2);
+      ctx.lineTo(-rocketLength + rocketSize/2, -rocketSize/3);
+      ctx.closePath();
       ctx.fill();
+      
+      // Bottom fin
+      ctx.beginPath();
+      ctx.moveTo(-rocketLength, rocketSize/3);
+      ctx.lineTo(-rocketLength - rocketSize/2, rocketSize/2);
+      ctx.lineTo(-rocketLength + rocketSize/2, rocketSize/3);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Windows
+      ctx.fillStyle = '#a0d8ef'; // Light blue windows
+      ctx.beginPath();
+      ctx.arc(-rocketLength/2, 0, rocketSize/6, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Rocket engine
+      ctx.fillStyle = '#666666'; // Dark gray engine
+      ctx.beginPath();
+      ctx.rect(-rocketLength - rocketSize/4, -rocketSize/4, rocketSize/4, rocketSize/2);
+      ctx.fill();
+      
+      // Rocket exhaust (when moving)
+      if (isRunning) {
+        // Create flame gradient
+        const exhaustGradient = ctx.createLinearGradient(
+          -rocketLength - rocketSize/4 - rocketSize, 0,
+          -rocketLength - rocketSize/4, 0
+        );
+        exhaustGradient.addColorStop(0, 'rgba(255, 165, 0, 0)');
+        exhaustGradient.addColorStop(0.5, 'rgba(255, 165, 0, 0.5)');
+        exhaustGradient.addColorStop(1, 'rgba(255, 69, 0, 0.8)');
+        
+        ctx.fillStyle = exhaustGradient;
+        ctx.beginPath();
+        ctx.moveTo(-rocketLength - rocketSize/4, -rocketSize/4);
+        ctx.lineTo(-rocketLength - rocketSize/4 - rocketSize, 0);
+        ctx.lineTo(-rocketLength - rocketSize/4, rocketSize/4);
+        ctx.closePath();
+        ctx.fill();
+      }
       
       ctx.restore();
       
