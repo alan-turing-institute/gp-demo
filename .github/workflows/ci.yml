@@ -2,9 +2,9 @@ name: Build and Deploy
 
 on:
   pull_request:
-    branches: ["main"]
+    branches: [main]
   push:
-    branches: ["main"]
+    branches: [main]
 
 defaults:
   run:
