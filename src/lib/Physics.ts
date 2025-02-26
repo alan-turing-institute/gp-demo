@@ -12,7 +12,7 @@ export interface Target {
   radius: number;
   angle: number;
   speed: number;
-  radius_orbit: number;
+  radius_orbit: number;f
 }
 
 export class Physics {
@@ -68,9 +68,9 @@ export class Physics {
 
   reset() {
       this.rocket.x = this.width / 2;
-      this.rocket.y = this.height - 20;
+      this.rocket.y = this.height;
       this.rocket.vx = 0;
       this.rocket.vy = 0;
-      this.target.angle = 0;
+      this.target.angle = 90;
   }
 }
