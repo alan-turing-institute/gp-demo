@@ -165,15 +165,10 @@
     </div>
   </div>
 
-  <svg
-    bind:this={svg}
-    on:mousemove={handleMousemove}
-    on:click={handleClick}
-    overflow="visible"
-  >
-    <Axes {xScale} {yScale} {xTicks} {yTicks} {width} {height} {padding} />
-    <XIndicators {xScale} {yScale} y1={minY} y2={maxY} />
-    <YIndicatorBar {xScale} {yScale} />
+	<svg bind:this={svg} overflow="visible">
+		<Axes {xScale} {yScale} {xTicks} {yTicks} {width} {height} {padding} />
+		<!-- <XIndicators {xScale} {yScale} y1={minY} y2={maxY} /> -->
+		<!-- <YIndicatorBar {xScale} {yScale} /> -->
 
     <!-- data -->
     {#if plotProps.confidence}

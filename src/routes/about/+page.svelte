@@ -41,34 +41,9 @@
 					noiseScale * noiseScale
 				)
 			: prior(kernelWithJitter);
-
-	$: k1s = xs.map((x) => gp.kernel($x1, x));
-	$: k2s = xs.map((x) => gp.kernel($x2, x));
 	$: means = gp.mean(xs);
 	$: covMat = gp.cov(xs);
 	$: marginalVariances = covMat.diag();
-	$: covSqrt = matrixSqrt(covMat);
-
-  // let samples: Matrix; // bound to Animation component; will be undefined until it was mounted
-  
-  // $: getDataAt = (dat: IndicesAndFrac) => {
-	// 	// Computes linear interpolation of all properties for point between two indices
-	// 	// TODO improve using d3-interpolate?
-	// 	const samples1 = !samples ? [] : samples.getRow(dat.idx1);
-	// 	const samples2 = !samples ? [] : samples.getRow(dat.idx2);
-	// 	const ys = samples1.map((y1: number, i: number) => dat.w1 * y1 + dat.w2 * samples2[i]);
-	// 	const mean = dat.w1 * means[dat.idx1] + dat.w2 * means[dat.idx2];
-	// 	const variance = dat.w1 * marginalVariances[dat.idx1] + dat.w2 * marginalVariances[dat.idx2];
-	// 	const k1 = dat.w1 * k1s[dat.idx1] + dat.w2 * k1s[dat.idx2];
-	// 	const k2 = dat.w1 * k2s[dat.idx1] + dat.w2 * k2s[dat.idx2];
-	// 	return { ys, mean, variance, k1, k2 };
-	// };
-  // $: atX1 = getDataAt(getIndicesAndFrac(xs, $x1));
-	// $: atX2 = getDataAt(getIndicesAndFrac(xs, $x2));
-
-	// $: covY1Y2 = gp.cov([$x1, $x2]);
-	// $: covProps = covEllipse(covY1Y2);
-
 </script>
 
 <!-- Make container with left panel and right panel -->
