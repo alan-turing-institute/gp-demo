@@ -1,0 +1,46 @@
+name: Build and Deploy
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+defaults:
+  run:
+    working-directory: ./
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      # - name: Install wasm-pack
+      #   uses: jetli/wasm-pack-action@v0.4.0
+
+      # - name: Cache WASM build
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: popgetter-browser/rust_backend/target
+      #     key: rust_backend
+
+      - name: Install dependencies for all packages
+        run: |
+          pnpm install
+
+      - name: Build web app
+        run: |
+          pnpm build
+
+      - name: Publish
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/
