@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies for all packages
         run: |
-          pnpm install
+          pnpm install --no-frozen-lockfile
 
       - name: Build web app
         run: |
