@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
     import { onMount } from 'svelte';
+    import { Physics } from './Physics';
     
     // Parameters controlled by sliders
     let angle = 45; // Initial angle in degrees
@@ -8,31 +9,19 @@
     // Canvas dimensions
     let width = 400;
     let height = 300;
-    let canvas;
-    let ctx;
+    let canvas: HTMLCanvasElement;
+    let ctx: CanvasRenderingContext2D;
     
-    // Game objects
-    let rocket = {
-      x: 50,
-      y: height - 50,
-      size: 20
-    };
-    
-    let target = {
-      x: width - 50,
-      y: 50,
-      radius: 15,
-      angle: 0,        // Current angle for circular motion
-      speed: 0.02,     // Speed of rotation
-      radius_orbit: 50 // Radius of circular path
-    };
+    // Physics engine
+    let physics: Physics;
     
     // Animation control
-    let animationId;
+    let animationId: number;
     let isRunning = false;
     
     onMount(() => {
-      ctx = canvas.getContext('2d');
+      ctx = canvas.getContext('2d')!;
+      physics = new Physics(width, height);
       draw();
     });
     
@@ -44,25 +33,14 @@
     }
     
     function reset() {
-      rocket.x = width / 2;
-      rocket.y = height - 20;
-      target.angle = 0;
+      physics.reset();
       isRunning = false;
       if (animationId) cancelAnimationFrame(animationId);
       draw();
     }
     
     function animate() {
-      const radians = angle * Math.PI / 180;
-      rocket.x += Math.cos(radians) * speed;
-      rocket.y -= Math.sin(radians) * speed;
-      
-      // Update target position
-      target.angle += target.speed;
-      target.x = width - 100 + Math.cos(target.angle) * target.radius_orbit;
-      target.y = 100 + Math.sin(target.angle) * target.radius_orbit;
-      
-      if (rocket.x > width || rocket.x < 0 || rocket.y > height || rocket.y < 0) {
+      if (physics.update(angle, speed)) {
         reset();
       }
       
@@ -75,8 +53,8 @@
       
       // Draw Earth
       let gradient = ctx.createLinearGradient(0, height - 40, 0, height);
-      gradient.addColorStop(0, '#4CAF50');  // Green surface
-      gradient.addColorStop(1, '#2E7D32');  // Darker green
+      gradient.addColorStop(0, '#4CAF50');
+      gradient.addColorStop(1, '#2E7D32');
       ctx.fillStyle = gradient;
       ctx.beginPath();
       ctx.rect(0, height - 40, width, 40);
@@ -84,24 +62,24 @@
       
       // Draw rocket
       ctx.save();
-      ctx.translate(rocket.x, rocket.y);
+      ctx.translate(physics.rocket.x, physics.rocket.y);
       ctx.rotate(angle * Math.PI / 180);
       
       // Rocket body
       ctx.fillStyle = '#ff4444';
       ctx.beginPath();
-      ctx.moveTo(-rocket.size/2, rocket.size/2);
-      ctx.lineTo(rocket.size/2, 0);
-      ctx.lineTo(-rocket.size/2, -rocket.size/2);
-      ctx.lineTo(-rocket.size/2, rocket.size/2);
+      ctx.moveTo(-physics.rocket.size/2, physics.rocket.size/2);
+      ctx.lineTo(physics.rocket.size/2, 0);
+      ctx.lineTo(-physics.rocket.size/2, -physics.rocket.size/2);
+      ctx.lineTo(-physics.rocket.size/2, physics.rocket.size/2);
       ctx.fill();
       
       // Rocket fins
       ctx.fillStyle = '#cc2222';
       ctx.beginPath();
-      ctx.moveTo(-rocket.size/2, rocket.size/3);
-      ctx.lineTo(-rocket.size, rocket.size/2);
-      ctx.lineTo(-rocket.size/2, -rocket.size/3);
+      ctx.moveTo(-physics.rocket.size/2, physics.rocket.size/3);
+      ctx.lineTo(-physics.rocket.size, physics.rocket.size/2);
+      ctx.lineTo(-physics.rocket.size/2, -physics.rocket.size/3);
       ctx.fill();
       
       ctx.restore();
@@ -109,7 +87,7 @@
       // Draw target
       ctx.fillStyle = 'gray';
       ctx.beginPath();
-      ctx.arc(target.x, target.y, target.radius, 0, Math.PI * 2);
+      ctx.arc(physics.target.x, physics.target.y, physics.target.radius, 0, Math.PI * 2);
       ctx.fill();
     }
   </script>
