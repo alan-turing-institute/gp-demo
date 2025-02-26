@@ -27,8 +27,9 @@ jobs:
           pnpm install --no-frozen-lockfile
 
       - name: Build web app
-        run: |
+        run: | # Build the web app and ls directory
           pnpm build
+          ls
 
       - name: Publish
         uses: peaceiris/actions-gh-pages@v3
