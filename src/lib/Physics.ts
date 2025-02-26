@@ -23,7 +23,7 @@ export class Physics {
 
     this.rocket = {
       x: 50,
-      y: height - 50,
+      y: height - 100,
       size: 20,
     };
 
@@ -116,7 +116,7 @@ export class Physics {
 
   reset() {
     this.rocket.x = 50;  // Use a fixed position that matches the initial setup
-    this.rocket.y = this.height - 50;
+    this.rocket.y = this.height - 100;
     // Reset the target to start from the top and slightly to the right
     this.target.x = this.width - 50;  
     this.target.y = 50;

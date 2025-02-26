@@ -65,7 +65,7 @@
       ctx.translate(physics.rocket.x, physics.rocket.y);
       
       // Calculate flight angle from velocity
-      let flightAngle = isRunning ? angle : 90; // Always start at 90 degrees when not running
+      let flightAngle = isRunning ? angle : 270; // Always start at 18 degrees when not running
       
       if (isRunning) {
         const vx = physics.rocket.vx;
