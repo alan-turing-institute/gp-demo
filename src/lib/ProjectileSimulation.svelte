@@ -3,8 +3,8 @@
     import { Physics } from './Physics';
     
     // Parameters controlled by sliders
-    let angle = 270; // Changed to 90 degrees to point straight up initially
-    let speed = 5;  // Initial speed
+    let angle = 360; // Changed to 90 degrees to point straight up initially
+    let speed = 100;  // Initial speed
     
     // Canvas dimensions
     let width = 400;
@@ -168,7 +168,7 @@
       
       <label>
         Speed: {speed}
-        <input type="range" min="1" max="10" step="0.5" bind:value={speed} disabled={isRunning}>
+        <input type="range" min="500" max="1000" step="5" bind:value={speed} disabled={isRunning}>
       </label>
       
       <button on:click={start} disabled={isRunning}>Launch</button>
