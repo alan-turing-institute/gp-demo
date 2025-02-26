@@ -22,15 +22,6 @@ jobs:
         with:
           version: 9
 
-      # - name: Install wasm-pack
-      #   uses: jetli/wasm-pack-action@v0.4.0
-
-      # - name: Cache WASM build
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: popgetter-browser/rust_backend/target
-      #     key: rust_backend
-
       - name: Install dependencies for all packages
         run: |
           pnpm install
@@ -43,4 +34,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .build/
+          publish_dir: build
+          publish_branch: gh-pages
