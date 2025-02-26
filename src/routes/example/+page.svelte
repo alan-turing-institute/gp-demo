@@ -210,9 +210,9 @@ Future thoughts:
 			<div class="chart" style="grid-area: kernelslices;">
 				<PlotKernelSlices {xs} {k1s} {k2s} {atX1} {atX2} />
 			</div>
-			<!-- <div class="chart" style="grid-area: bicovmatrix;">
+			<div class="chart" style="grid-area: bicovmatrix;">
 				<ShowBivariateCovarianceMatrix {atX1} {atX2} />
-			</div> -->
+			</div>
 			<div class="chart" style="grid-area: marginals;">
 				<PlotMarginals
 					{xs}

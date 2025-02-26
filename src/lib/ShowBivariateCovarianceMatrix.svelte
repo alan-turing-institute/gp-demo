@@ -33,6 +33,7 @@
 	const correlationSymbolStr = '\\rho(f(x_1), f(x_2)) =';
 </script>
 
+<!-- TODO (fix): Not working currently so commenting out for now-->
 <!-- <div style="margin-left: 2em; display: flex; align-items: center; height: 90%;">
   <div style="">
     <div>
