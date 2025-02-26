@@ -16,10 +16,10 @@
   export let xs: number[],
     means: number[],
     marginalVariances: number[],
-    samples: Matrix,
+    // samples: Matrix,
     points: Point[],
-    atX1: DataAtX,
-    atX2: DataAtX,
+    // atX1: DataAtX,
+    // atX2: DataAtX,
     plotProps: PlotProps,
     noiseScale: number;
 
@@ -50,12 +50,12 @@
 
   // mean and samples
   $: pathMean = makePath(xs, means);
-  $: samplePaths = samples
-    ? samples
-        .transpose()
-        .to2DArray()
-        .map((ys) => makePath(xs, ys))
-    : [];
+  // $: samplePaths = samples
+  //   ? samples
+  //       .transpose()
+  //       .to2DArray()
+  //       .map((ys) => makePath(xs, ys))
+  //   : [];
 
   // marginal y distributions at x1 and x2
   // TODO unify with Covariance?
@@ -67,27 +67,27 @@
       num_grid
     );
   }
-  $: ys1 = makeYs(atX1);
-  $: ys2 = makeYs(atX2);
+  // $: ys1 = makeYs(atX1);
+  // $: ys2 = makeYs(atX2);
 
   const mMax = 1;
   const mWidth = 50;
   $: mScale = scaleLinear().domain([0, mMax]).range([0, mWidth]);
 
-  $: marginalDistX1 = gaussian(atX1.mean, atX1.variance);
-  $: marginalDistX2 = gaussian(atX2.mean, atX2.variance);
-  $: pathMarginal1 = pathGenerator(
-    mScale,
-    yScale,
-    xScale($x1),
-    0
-  )(ys1.map(marginalDistX1), ys1);
-  $: pathMarginal2 = pathGenerator(
-    mScale,
-    yScale,
-    xScale($x2),
-    0
-  )(ys2.map(marginalDistX2), ys2);
+  // $: marginalDistX1 = gaussian(atX1.mean, atX1.variance);
+  // $: marginalDistX2 = gaussian(atX2.mean, atX2.variance);
+  // $: pathMarginal1 = pathGenerator(
+  //   mScale,
+  //   yScale,
+  //   xScale($x1),
+  //   0
+  // )(ys1.map(marginalDistX1), ys1);
+  // $: pathMarginal2 = pathGenerator(
+  //   mScale,
+  //   yScale,
+  //   xScale($x2),
+  //   0
+  // )(ys2.map(marginalDistX2), ys2);
 
   // one and two sigma confidence intervals
   $: additionalVariance =
@@ -183,45 +183,8 @@
     {#if plotProps.mean}
       <path class="path-line" d={pathMean} style="stroke-dasharray: 5;" />
     {/if}
-    {#if plotProps.marginals}
-      <path
-        class="path-line"
-        d={pathMarginal1}
-        style="stroke: red; stroke-width: 2;"
-      />
-      <path
-        class="path-line"
-        d={pathMarginal2}
-        style="stroke: orange; stroke-width: 2;"
-      />
-    {/if}
+    
 
-    {#if plotProps.samples}
-      {#each samplePaths as path, i}
-        <path
-          class="path-line"
-          d={path}
-          style="stroke: {sampleColor(String(i))};"
-        />
-      {/each}
-
-      {#each atX1.ys as y1, i}
-        <circle
-          cx={xScale($x1)}
-          cy={yScale(y1)}
-          r="3"
-          style="fill: {sampleColor(String(i))};"
-        />
-      {/each}
-      {#each atX2.ys as y2, i}
-        <circle
-          cx={xScale($x2)}
-          cy={yScale(y2)}
-          r="3"
-          style="fill: {sampleColor(String(i))};"
-        />
-      {/each}
-    {/if}
 
     {#each points as point}
       <circle

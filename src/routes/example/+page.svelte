@@ -114,7 +114,7 @@ Future thoughts:
 	$: covY1Y2 = gp.cov([$x1, $x2]);
 	$: covProps = covEllipse(covY1Y2);
 
-	let points = [];
+	let points: any[] = [];
 </script>
 
 <div>

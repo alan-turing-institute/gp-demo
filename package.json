@@ -52,6 +52,8 @@
 		]
 	},
 	"dependencies": {
+		"@types/d3-scale": "^4.0.9",
+		"@types/d3-scale-chromatic": "^3.1.0",
 		"d3": "^7.9.0",
 		"d3-array": "^3.2.4",
 		"d3-hexbin": "^0.2.2",
@@ -59,6 +61,7 @@
 		"d3-scale": "^4.0.2",
 		"d3-scale-chromatic": "^3.1.0",
 		"katex": "^0.16.21",
+		"mathjs": "^14.2.1",
 		"ml-matrix": "^6.12.0",
 		"svelte-collapsible": "^0.3.1"
 	}
