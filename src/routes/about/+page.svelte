@@ -3,6 +3,7 @@
 	export const ssr = false;
 	import { onMount } from 'svelte';
 	import * as math from 'mathjs';
+	import Table from '$lib/Table.svelte';
   
 	// -----------------------
 	// CANVAS & DOMAIN SETTINGS
@@ -36,6 +37,7 @@
 	  const mu = 1;
 	  const R = 10;
 	  const b = R * Math.abs(Math.sin(theta));
+	  // (mu / v^2) * (sqrt((1 + (R sin theta)^2 v^4) / mu^2) - 1)
 	  return (mu / (v * v)) * (Math.sqrt(1 + (b * b * v * v * v * v) / (mu * mu)) - 1);
 	}
   
@@ -52,6 +54,7 @@
 	let trainingX = [];
 	let trainingY = [];
   
+	// TODO: check this
 	function gpPredictAt(xStar, K_inv, lengthScale = 0.5, variance = 1, noise = 1e-6) {
 	  const n = trainingX.length;
 	  let k = [];
@@ -74,6 +77,7 @@
 	let asteroidCanvas;
 	let meanCanvas;
 	let varianceCanvas;
+	let dataframeCanvas;
 	let meanColorBar;
 	let varColorBar;
   
@@ -529,6 +533,14 @@
 		<canvas bind:this={varianceCanvas} class="gp-canvas" width={fullWidth} height={fullHeight}></canvas>
 		<canvas bind:this={varColorBar} class="color-bar" width="40" height={fullHeight}></canvas>
 	  </div>
+	</div>
+
+	<!-- DataFrame Panel -->
+	<div class="panel">
+		<div class="panel-title">DataFrame</div>
+		<div class="canvas-container">
+		  <Table {trainingX} {trainingY}></Table>
+		</div>
 	</div>
   </div>
   
