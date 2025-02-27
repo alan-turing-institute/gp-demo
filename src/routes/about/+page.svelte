@@ -1,14 +1,13 @@
 <script lang="ts">
-	import type { Point } from "$lib/types";
+  import type { Point } from "$lib/types";
   import PlotMarginalsNoSamples from '$lib/PlotMarginalsNoSamples.svelte';
-	import { linspace, matrixSqrt } from "$lib/mymath";
+  import { linspace, matrixSqrt } from "$lib/mymath";
   import { instantiateKernel, sumKernel, white } from "$lib/kernels";
   import { makeSqexp } from "$lib/kernels";
   import { posterior, prior } from '$lib/gpposterior';
   import {x1, x2} from "$lib/store";
-	import type Matrix from "ml-matrix";
-	import { type IndicesAndFrac, getIndicesAndFrac } from "$lib/binarysearch";
-  // import { addPoint } from "$lib/PlotMarginals.svelte";
+  import type Matrix from "ml-matrix";
+  import { type IndicesAndFrac, getIndicesAndFrac } from "$lib/binarysearch";
 
   let points: Point[] = [];
 
@@ -18,6 +17,9 @@
     console.log(points);
   }
 
+  function clearPoints() {
+    points = []
+  }
   let plotProps = {
 		mean: true,
 		confidence: true,
@@ -65,16 +67,13 @@
 
 
 <div class="panel">
+  <!-- Add button for left panel to push data -->
   <div class="panel-left">
 	<h2>Left Panel</h2>
-	<!-- <button on:click={() => addPoint(Math.random(), Math.random())}>Add point</button> -->
 	<button on:click={() => addPoint(Math.random()*6, Math.random())}>Add point</button>
-	<!-- <ul>
-	  {#each points as point}
-		<li>{point.x}, {point.y}</li>
-	  {/each}
-	</ul> -->
+	<button on:click={() => clearPoints()}>Clear points</button>
   </div>
+  <!-- Add plot marginals for right panel to shwo emulator after data pushed -->
   <div class="panel-right">
 	<h2>Right Panel</h2>
 		<!-- GP visualisation (change style later)-->
@@ -88,12 +87,3 @@
     />
   </div>
 </div>
-
-<!-- Add button for left panel to push data -->
-
-
-
-<!-- Add plot marginals for right panel to shwo emulator after data pushed -->
-
-
-
