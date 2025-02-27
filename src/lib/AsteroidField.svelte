@@ -129,12 +129,53 @@
       
       <!-- Earth at center -->
       <g class="earth" transform="translate({squareSize/2}, {squareSize/2})">
-        <circle r="30" fill="#1a66ff" />
-        <!-- Continental patterns -->
-        <path d="M-15,-5 Q0,10 15,-5 M-20,5 Q-5,15 10,8 M5,-15 Q15,-5 10,10" 
-              fill="none" stroke="#5c9e31" stroke-width="3" />
-        <circle r="30" fill="none" stroke="#fff" stroke-width="1" opacity="0.4" />
-        <circle r="35" fill="none" stroke="rgba(100,200,255,0.4)" stroke-width="5" />
+        <!-- Ocean base -->
+        <circle r="30" fill="#0066cc" />
+        
+        <!-- Continental patterns - more detailed land masses -->
+        <g class="continents">
+          <!-- North America -->
+          <path d="M-25,-5 C-23,-10 -20,-15 -15,-17 C-13,-20 -10,-22 -7,-20 C-5,-18 -3,-15 -3,-12 C-2,-8 -5,-5 -7,-2 C-10,0 -12,3 -16,5 C-19,7 -22,8 -25,5 C-27,2 -28,-2 -25,-5 Z" 
+            fill="#5d8c51" />
+          
+          <!-- South America -->
+          <path d="M-7,5 C-5,8 -4,12 -6,16 C-7,20 -10,22 -11,25 C-12,22 -14,20 -13,17 C-12,14 -10,10 -9,7 C-8,5 -8,3 -7,5 Z" 
+            fill="#6b9c5f" />
+          
+          <!-- Europe -->
+          <path d="M0,-10 C3,-12 7,-11 10,-10 C12,-13 15,-15 18,-14 C18,-11 17,-8 15,-6 C12,-5 8,-6 5,-4 C3,-2 0,0 -2,-2 C-3,-5 -2,-8 0,-10 Z" 
+            fill="#5a8555" />
+          
+          <!-- Africa -->
+          <path d="M5,0 C8,-2 12,-1 15,1 C17,4 18,8 17,12 C15,16 12,18 8,17 C5,15 3,12 2,8 C1,4 3,1 5,0 Z" 
+            fill="#7da065" />
+          
+          <!-- Asia -->
+          <path d="M12,-8 C15,-10 19,-9 22,-7 C24,-4 25,0 24,4 C23,8 20,12 16,14 C12,15 8,13 6,10 C5,6 7,2 9,-1 C10,-4 10,-7 12,-8 Z" 
+            fill="#6b9c5f" />
+          
+          <!-- Australia -->
+          <path d="M18,8 C20,7 22,8 23,10 C24,12 23,15 21,16 C19,17 16,16 15,14 C14,12 15,9 18,8 Z" 
+            fill="#8fb073" />
+        </g>
+        
+        <!-- Cloud patterns - semi-transparent white swirls -->
+        <g class="clouds" opacity="0.5">
+          <path d="M-20,-10 C-15,-12 -10,-10 -15,-5 C-20,-2 -25,-5 -20,-10 Z" 
+            fill="white" opacity="0.6" />
+          <path d="M5,-25 C10,-23 12,-18 8,-15 C3,-14 0,-18 5,-25 Z" 
+            fill="white" opacity="0.5" />
+          <path d="M15,10 C20,8 25,12 22,16 C18,18 12,15 15,10 Z" 
+            fill="white" opacity="0.7" />
+          <path d="M-10,15 C-5,18 -2,22 -7,25 C-12,24 -15,20 -10,15 Z" 
+            fill="white" opacity="0.4" />
+        </g>
+        
+        <!-- Atmospheric glow -->
+        <circle r="30" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1" />
+        <circle r="32" fill="none" stroke="rgba(120,200,255,0.3)" stroke-width="2" />
+        <circle r="35" fill="none" stroke="rgba(100,200,255,0.2)" stroke-width="3" />
+        <circle r="39" fill="none" stroke="rgba(80,180,255,0.1)" stroke-width="4" />
       </g>
       
       <!-- Asteroids -->
