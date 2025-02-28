@@ -1,0 +1,1 @@
+import{t as r,a as m}from"./DDK9J2ve.js";import"./D6NYvkbl.js";import{p as t}from"./C9RHmIYu.js";var e=r("<h1>An example component</h1>");function s(o,p){t(p,"name",8,"world");var a=e();m(o,a)}export{s as E};
