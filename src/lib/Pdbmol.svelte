@@ -1,7 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-    let indices =[1,2,3,4];
-    let angle = 90;
 	let pdbData = `
 ATOM      2  CH3 ACE     1       2.000   2.090   0.000
 ATOM      5  C   ACE     1       3.427   2.641  -0.000
@@ -15,82 +13,85 @@ ATOM     16  O   ALA     2       3.601   6.653   0.000
 ATOM     17  N   NME     3       5.846   6.835   0.000
 ATOM     18  H   NME     3       6.737   6.359  -0.000
 ATOM     19  CH3 NME     3       5.846   8.284   0.000
-
 TER   
 END`;
 
-	function rotatePDBSubset(pdbString, indices, angle) {
-		let viewer = new $3Dmol.GLViewer(document.createElement('div'));
-		viewer.addModel(pdbString, 'pdb');
-		let model = viewer.getModel(0);
+	function applyTorsion(viewer, atom1, atom2, angle) {
+		let model = viewer.getModel();
+		let atoms = model.selectedAtoms({}); // Get all atoms
 
-		// Parse atoms and get the subset to rotate
-		let atoms = model.selectedAtoms({});
-		let subset = indices.map((i) => atoms[i]).filter((atom) => atom);
+		let pos1 = null,
+			pos2 = null;
+		let rotatingAtoms = new Set();
 
-		if (subset.length === 0) {
-			console.error('No atoms found for the given indices.');
-			return pdbString;
+		// Find the bond atoms
+		atoms.forEach((atom) => {
+			if (atom.index === atom1) pos1 = atom;
+			if (atom.index === atom2) pos2 = atom;
+		});
+
+		if (!pos1 || !pos2) {
+			console.error('Invalid atom indices.');
+			return;
 		}
 
-		// Compute centroid of the subset to use as rotation center
-		let centroid = subset.reduce(
-			(acc, atom) => {
-				acc.x += atom.x;
-				acc.y += atom.y;
-				acc.z += atom.z;
-				return acc;
-			},
-			{ x: 0, y: 0, z: 0 }
-		);
-		centroid.x /= subset.length;
-		centroid.y /= subset.length;
-		centroid.z /= subset.length;
+		// Find which atoms should rotate (assume pos2 stays fixed)
+		let queue = [pos1];
+		while (queue.length > 0) {
+			let current = queue.pop();
+			if (!rotatingAtoms.has(current.index)) {
+				rotatingAtoms.add(current.index);
+				queue.push(
+					...atoms.filter((a) => a.bonds.includes(current.index) && a.index !== pos2.index)
+				);
+			}
+		}
 
-		// Convert angle to radians
-		let rad = (angle * Math.PI) / 180;
-		let cosA = Math.cos(rad);
-		let sinA = Math.sin(rad);
-		let ux = 0,
-			uy = 0,
-			uz = 1; // Default rotation axis (Z-axis)
-		let rotationMatrix = [
-			[
-				cosA + ux * ux * (1 - cosA),
-				ux * uy * (1 - cosA) - uz * sinA,
-				ux * uz * (1 - cosA) + uy * sinA
-			],
-			[
-				uy * ux * (1 - cosA) + uz * sinA,
-				cosA + uy * uy * (1 - cosA),
-				uy * uz * (1 - cosA) - ux * sinA
-			],
-			[
-				uz * ux * (1 - cosA) - uy * sinA,
-				uz * uy * (1 - cosA) + ux * sinA,
-				cosA + uz * uz * (1 - cosA)
-			]
-		];
+		// Compute rotation axis and matrix
+		let axis = [pos2.x - pos1.x, pos2.y - pos1.y, pos2.z - pos1.z];
+		let theta = (angle * Math.PI) / 180; // Convert to radians
 
-		// Apply rotation
-		subset.forEach((atom) => {
-			let x = atom.x - centroid.x;
-			let y = atom.y - centroid.y;
-			let z = atom.z - centroid.z;
+		function rotatePoint(p, origin, axis, theta) {
+			let ux = axis[0],
+				uy = axis[1],
+				uz = axis[2];
+			let x = p.x - origin.x,
+				y = p.y - origin.y,
+				z = p.z - origin.z;
+			let cosT = Math.cos(theta),
+				sinT = Math.sin(theta);
 
-			atom.x =
-				centroid.x +
-				(rotationMatrix[0][0] * x + rotationMatrix[0][1] * y + rotationMatrix[0][2] * z);
-			atom.y =
-				centroid.y +
-				(rotationMatrix[1][0] * x + rotationMatrix[1][1] * y + rotationMatrix[1][2] * z);
-			atom.z =
-				centroid.z +
-				(rotationMatrix[2][0] * x + rotationMatrix[2][1] * y + rotationMatrix[2][2] * z);
+			return {
+				x:
+					origin.x +
+					(cosT + (1 - cosT) * ux * ux) * x +
+					((1 - cosT) * ux * uy - uz * sinT) * y +
+					((1 - cosT) * ux * uz + uy * sinT) * z,
+				y:
+					origin.y +
+					((1 - cosT) * uy * ux + uz * sinT) * x +
+					(cosT + (1 - cosT) * uy * uy) * y +
+					((1 - cosT) * uy * uz - ux * sinT) * z,
+				z:
+					origin.z +
+					((1 - cosT) * uz * ux - uy * sinT) * x +
+					((1 - cosT) * uz * uy + ux * sinT) * y +
+					(cosT + (1 - cosT) * uz * uz) * z
+			};
+		}
+
+		// Apply rotation to all rotating atoms
+		atoms.forEach((atom) => {
+			if (rotatingAtoms.has(atom.index)) {
+				let newPos = rotatePoint(atom, pos2, axis, theta);
+				atom.x = newPos.x;
+				atom.y = newPos.y;
+				atom.z = newPos.z;
+			}
 		});
 
 		model.setCoordinates(atoms);
-		return model.getPDB();
+		viewer.render();
 	}
 
 	onMount(async () => {
