@@ -37,10 +37,12 @@
     const HEIGHT = 400;
     const MARGIN = 40;
     const PLOT_SIZE = WIDTH - 2 * MARGIN;
-  
+    const MAX_VELOCITY = 1e9; 
+    const MIN_VELOCITY = 1e-9;
+
     // Updated scales: now angle is 0–360 (degrees) and velocity is 0.1–3.
     const xScale = d3.scaleLinear().domain([0, 360]).range([MARGIN, WIDTH - MARGIN]);
-    const yScale = d3.scaleLinear().domain([0.1, 3]).range([HEIGHT - MARGIN, MARGIN]);
+    const yScale = d3.scaleLinear().domain([MIN_VELOCITY, MAX_VELOCITY]).range([HEIGHT - MARGIN, MARGIN]);
   
     // Calculate min and max energy values for consistent color scaling
     let energyMin = Infinity;
@@ -51,7 +53,7 @@
       const gridSize = 50;
       // Angle in degrees from 0 to 360 and velocity from 0.1 to 3
       const angleVals = math.range(0, 360, 360 / gridSize).toArray();
-      const velocityVals = math.range(0.1, 3, (3 - 0.1) / gridSize).toArray();
+      const velocityVals = math.range(MIN_VELOCITY, MAX_VELOCITY, (MAX_VELOCITY - MIN_VELOCITY) / gridSize).toArray();
       
       for (const gridAngle of angleVals) {
         for (const gridVelocity of velocityVals) {
@@ -79,8 +81,8 @@
       
       // Calculate trajectory parameters based on angle and velocity
       // This is a simplified model of an asteroid trajectory
-      const initialX = Math.cos(angleRad);
-      const initialY = Math.sin(angleRad);
+      const initialX = 1;
+      const initialY = 1;
       const velocityX = velocity * Math.cos(angleRad + Math.PI/2); // Perpendicular to radius
       const velocityY = velocity * Math.sin(angleRad + Math.PI/2);
       
@@ -211,7 +213,7 @@ function handleContourClick(event) {
         const gridSize = 40;
         // GP grid: training data angle is in radians (0 to 2π) and velocity is 0.1 to 3
         const angleVals = math.range(0, 2 * Math.PI, (2 * Math.PI) / gridSize).toArray();
-        const velocityVals = math.range(0.1, 3, (3 - 0.1) / gridSize).toArray();
+        const velocityVals = math.range(MIN_VELOCITY, MAX_VELOCITY, (MAX_VELOCITY - MIN_VELOCITY) / gridSize).toArray();
         
         gpPredictions = [];
         
@@ -264,7 +266,7 @@ function handleContourClick(event) {
           for (let j = 0; j < gridSize; j++) {
             // Use angle in degrees (0 to 360) and velocity (0.1 to 3)
             const angleVal = (360 * i) / gridSize;
-            const velocityVal = 0.1 + ((3 - 0.1) * j) / gridSize;
+            const velocityVal = MIN_VELOCITY + ((MAX_VELOCITY - MIN_VELOCITY) * j) / gridSize;
             
             const energy = calculateEnergy(angleVal, velocityVal);
             const x = xScale(angleVal);
@@ -312,9 +314,9 @@ function handleContourClick(event) {
       ctx.fillText("Angle", WIDTH - MARGIN + 15, HEIGHT - MARGIN + 5);
       
       ctx.textAlign = "right";
-      ctx.fillText("0.1", MARGIN - 5, HEIGHT - MARGIN);
-      ctx.fillText("1.55", MARGIN - 5, HEIGHT / 2);
-      ctx.fillText("3", MARGIN - 5, MARGIN);
+      ctx.fillText(MIN_VELOCITY, MARGIN - 5, HEIGHT - MARGIN);
+      ctx.fillText("", MARGIN - 5, HEIGHT / 2);
+      ctx.fillText(MAX_VELOCITY, MARGIN - 5, MARGIN);
       ctx.fillText("Velocity", MARGIN - 15, MARGIN - 10);
       
       // Draw sample points (convert stored radian values to degrees for plotting)
