@@ -1,5 +1,4 @@
 <script>
-//
 import { onMount } from 'svelte';
 import * as d3 from 'd3';
 import * as math from 'mathjs';
@@ -464,6 +463,11 @@ function drawMolecule() {
   });
 }
 
+// Toggle energy function display
+function toggleEnergyFunction() {
+  showEnergyFunction = !showEnergyFunction;
+  drawContourPlot(); // Redraw contour plot when toggling
+}
 
 onMount(() => {
   calculateEnergyRange(); // Calculate min/max energy values
@@ -487,30 +491,8 @@ $: {
       <h2>Backbone Angles</h2>
       <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
       
-      <div class="controls">
-        <div class="slider-container">
-          <label for="phi">φ (Phi): {phi.toFixed(2)}</label>
-          <input 
-            type="range" 
-            id="phi" 
-            min={-Math.PI} 
-            max={Math.PI} 
-            step={0.01} 
-            bind:value={phi}
-          />
-        </div>
-        
-        <div class="slider-container">
-          <label for="psi">ψ (Psi): {psi.toFixed(2)}</label>
-          <input 
-            type="range" 
-            id="psi" 
-            min={-Math.PI} 
-            max={Math.PI} 
-            step={0.01} 
-            bind:value={psi}
-          />
-        </div>
+      <div class="Other">
+
       </div>
     </div>
     
@@ -536,6 +518,9 @@ $: {
           {#if samples.length > 0}
             <button on:click={clearSamples}>Clear Samples</button>
           {/if}
+          <button on:click={toggleEnergyFunction} class="info-button">
+            {showEnergyFunction ? 'Show GP Prediction' : 'Show Energy Function'}
+          </button>
         </div>
         
         <div class="energy-function">
