@@ -2,6 +2,7 @@
     import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as math from 'mathjs';
+	  import EnergyLandscape from '$lib/EnergyLandscape.svelte';
   
     // Color palette - elegant muted colors
     const COLORS = {
@@ -467,6 +468,8 @@ function handleContourClick(event) {
       calculateEnergyRange();
       drawAstroid();
       drawContourPlot();
+      console.log("Astroid canvas:", canvas);
+      console.log("Contour canvas:", contourCanvas);
     });
   
     // Redraw astroid on changes
@@ -482,18 +485,18 @@ function handleContourClick(event) {
         <h2>Astroid Visualization</h2>
         <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
       </div>
-      <div class="panel">
-        <h2>Energy Landscape</h2>
-        <div class="contour-container">
-          <canvas 
-            bind:this={contourCanvas} 
-            width={WIDTH + 60} 
-            height={HEIGHT}
-            on:click={handleContourClick}
-            class={isLoading ? 'loading' : ''}
-          ></canvas>
+    <div class="panel">
+	    <h2>Energy Landscape</h2>
+	    <div class="contour-container">
+        <EnergyLandscape
+            {WIDTH}
+            {HEIGHT}
+            {handleContourClick}
+            {isLoading}
+            on:canvasReady={(event) => {contourCanvas = event.detail.canvas;}}
+          ></EnergyLandscape>
         </div>
-
+      </div>
       <div class="info">
         <p>Samples: {samples.length}</p>
         <p>Current energy: {calculateEnergy(angle, velocity).toFixed(2)}</p>
@@ -518,7 +521,6 @@ function handleContourClick(event) {
 
         </div>
       </div>
-    </div>
   </main>
   
   <style>
