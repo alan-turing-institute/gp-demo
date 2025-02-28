@@ -70,19 +70,58 @@
   
     // Energy function (angle is provided in degrees)
     function calculateEnergy(angle, velocity) {
-      // Convert angle from degrees to radians for energy calculation
+      // Convert angle from degrees to radians for calculation
       const angleRad = (angle * Math.PI) / 180;
       
-      // Modified free energy function with multiple peaks along velocity
-      const term1 = Math.exp(-((angleRad + Math.PI / 2) ** 2) - ((velocity - Math.PI / 2) ** 2) / 0.5);
-      const term2 = Math.exp(-((angleRad + Math.PI / 2) ** 2) - ((velocity + 0.5) ** 2) / 0.3);
-      const term3 = Math.exp(-((angleRad - Math.PI / 2) ** 2) - ((velocity + Math.PI / 2) ** 2) / 0.5);
-      const term4 = Math.exp(-((angleRad - Math.PI / 2) ** 2) - ((velocity - 0.5) ** 2) / 0.3);
-      const term5 = Math.exp(-((angleRad - 0) ** 2) / 0.3 - ((velocity - Math.PI / 4) ** 2) / 0.2);
+      // Constants for Earth's position (arbitrary for visualization)
+      const earthX = 0.5;
+      const earthY = -1.2;
       
-      const F = term1 + term2 + term3 + term4 + term5;
-      return -Math.log(F + 1e-6);
+      // Calculate trajectory parameters based on angle and velocity
+      // This is a simplified model of an asteroid trajectory
+      const initialX = Math.cos(angleRad);
+      const initialY = Math.sin(angleRad);
+      const velocityX = velocity * Math.cos(angleRad + Math.PI/2); // Perpendicular to radius
+      const velocityY = velocity * Math.sin(angleRad + Math.PI/2);
+      
+      // Calculate closest approach distance using a simplified trajectory model
+      // For a real model, you would need to solve the orbital equations
+      const dx = initialX - earthX;
+      const dy = initialY - earthY;
+      const dvx = velocityX;
+      const dvy = velocityY;
+      
+      // Calculate time of closest approach
+      const dot = dx * dvx + dy * dvy;
+      const v2 = dvx * dvx + dvy * dvy;
+      
+      // If velocity is nearly zero, return direct distance
+      if (v2 < 0.0001) {
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+      
+      const t = -dot / v2;
+      
+      // Calculate closest approach distance
+      let closestDistance;
+      if (t <= 0) {
+        // Closest point is in the past, so use current position
+        closestDistance = Math.sqrt(dx * dx + dy * dy);
+      } else {
+        // Calculate position at closest approach
+        const closestX = initialX + velocityX * t;
+        const closestY = initialY + velocityY * t;
+        closestDistance = Math.sqrt((closestX - earthX) * (closestX - earthX) + 
+                                  (closestY - earthY) * (closestY - earthY));
+      }
+      
+      // Scale the distance for better visualization (lower values = hotter colors)
+      // Adjust these constants to control the range of the colormap
+      const minDistance = 0.1;
+      const scaleFactor = 2.0;
+      return Math.max(minDistance, closestDistance * scaleFactor);
     }
+
   
     // Function to add a new sample (angle stored in radians)
     function addSample() {
