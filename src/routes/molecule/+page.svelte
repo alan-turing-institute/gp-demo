@@ -2,6 +2,8 @@
 import { onMount } from 'svelte';
 import * as d3 from 'd3';
 import * as math from 'mathjs';
+import Pdbmol from  '$lib/Pdbmol.svelte';
+
 // State variables
 let phi = 0;
 let psi = 0;
@@ -492,7 +494,7 @@ $: {
       <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
       
       <div class="Other">
-
+        <Pdbmol></Pdbmol>
       </div>
     </div>
     
