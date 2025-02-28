@@ -2,7 +2,6 @@
   import { onMount } from 'svelte';
   import * as d3 from 'd3';
   import * as math from 'mathjs';
-
   // State variables
   let phi = 0;
   let psi = 0;
@@ -12,7 +11,6 @@
   let contourCanvas;
   let isLoading = false;
   let showEnergyFunction = false;
-
   // Constants
   const WIDTH = 400;
   const HEIGHT = 400;
@@ -68,6 +66,41 @@
     updateGP();
   }
   
+  // Add sample by clicking on contour plot
+  function handleContourClick(event) {
+    if (isLoading) return;
+    
+    const rect = contourCanvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    // Convert click coordinates to phi/psi values
+    const clickedPhi = xScale.invert(x);
+    const clickedPsi = yScale.invert(y);
+    
+    // Check if the click is within the plot area
+    if (
+      x >= MARGIN && 
+      x <= WIDTH - MARGIN && 
+      y >= MARGIN && 
+      y <= HEIGHT - MARGIN
+    ) {
+      // Update the current phi/psi values
+      phi = clickedPhi;
+      psi = clickedPsi;
+      
+      // Add sample at the clicked location
+      const energy = calculateEnergy(phi, psi);
+      samples = [...samples, { phi, psi, energy }];
+      
+      // Update the GP model
+      updateGP();
+      
+      // Update the molecule visualization
+      drawMolecule();
+    }
+  }
+  
   // Perform Gaussian Process regression using RBF kernel
   function updateGP() {
     isLoading = true;
@@ -77,7 +110,6 @@
       isLoading = false;
       return;
     }
-
     setTimeout(() => {
       // Prepare training data
       const X = samples.map(s => [s.phi, s.psi]);
@@ -275,7 +307,6 @@
     ctx.fillText("Energy", 0, 0);
     ctx.restore();
   }
-
   // Draw the molecule visualization
   function drawMolecule() {
     if (!canvas) return;
@@ -348,19 +379,16 @@
       ctx.fillText(atom.label, atom.x, atom.y);
     });
   }
-
   // Toggle energy function display
   function toggleEnergyFunction() {
     showEnergyFunction = !showEnergyFunction;
     drawContourPlot(); // Redraw contour plot when toggling
   }
-
   onMount(() => {
     calculateEnergyRange(); // Calculate min/max energy values
     drawMolecule();
     drawContourPlot(); // Initial draw with energy function
   });
-
   // Watch for changes to redraw
   $: {
     if (canvas && (phi || psi)) {
@@ -368,7 +396,6 @@
     }
   }
 </script>
-
 <main>
   <h1>Protein Backbone Conformation Explorer</h1>
   
@@ -401,22 +428,27 @@
             bind:value={psi}
           />
         </div>
-        
-        <button on:click={addSample} disabled={isLoading}>
-          {isLoading ? 'Processing...' : 'Add Sample'}
-        </button>
       </div>
     </div>
     
     <div class="panel">
       <h2>Energy Landscape</h2>
       <div class="contour-container">
-        <canvas bind:this={contourCanvas} width={WIDTH + 60} height={HEIGHT}></canvas>
+        <canvas 
+          bind:this={contourCanvas} 
+          width={WIDTH + 60} 
+          height={HEIGHT} 
+          on:click={handleContourClick}
+          class={isLoading ? 'loading' : ''}
+        ></canvas>
       </div>
       
       <div class="info">
         <p>Samples: {samples.length}</p>
         <p>Current energy: {calculateEnergy(phi, psi).toFixed(2)}</p>
+        <div class="instruction">
+          <p class="highlight">Click on the plot above to add sample points and update the GP model</p>
+        </div>
         <div class="button-group">
           {#if samples.length > 0}
             <button on:click={() => { samples = []; updateGP(); }}>Clear Samples</button>
@@ -430,13 +462,12 @@
           <h3>About the Visualization:</h3>
           <p>{showEnergyFunction ? 'Showing actual energy function' : 'Showing Gaussian Process prediction'}</p>
           <p>The energy function represents different stable conformations of the protein backbone. Darker blue regions indicate lower energy (more stable conformations).</p>
-          <p>Click "Add Sample" at different points to build a GP model that learns this energy landscape.</p>
+          <p>Click directly on the plot to add sample points and build a GP model that learns this energy landscape.</p>
         </div>
       </div>
     </div>
   </div>
 </main>
-
 <style>
   main {
     max-width: 900px;
@@ -486,9 +517,18 @@
     margin-bottom: 15px;
   }
   
+  canvas.loading {
+    cursor: wait;
+    opacity: 0.7;
+  }
+  
   .contour-container {
     overflow: hidden;
     position: relative;
+  }
+  
+  .contour-container canvas {
+    cursor: pointer;
   }
   
   .controls, .info {
@@ -551,6 +591,19 @@
     background-color: #f8f8f8;
     border-radius: 4px;
     border-left: 4px solid #2196F3;
+  }
+  
+  .instruction {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: #fffde7;
+    border-radius: 4px;
+    border-left: 4px solid #ffc107;
+  }
+  
+  .highlight {
+    font-weight: bold;
+    margin: 0;
   }
   
   pre {
