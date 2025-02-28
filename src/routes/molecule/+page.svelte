@@ -464,11 +464,6 @@ function drawMolecule() {
   });
 }
 
-// Toggle energy function display
-function toggleEnergyFunction() {
-  showEnergyFunction = !showEnergyFunction;
-  drawContourPlot(); // Redraw contour plot when toggling
-}
 
 onMount(() => {
   calculateEnergyRange(); // Calculate min/max energy values
@@ -541,9 +536,6 @@ $: {
           {#if samples.length > 0}
             <button on:click={clearSamples}>Clear Samples</button>
           {/if}
-          <button on:click={toggleEnergyFunction} class="info-button">
-            {showEnergyFunction ? 'Show GP Prediction' : 'Show Energy Function'}
-          </button>
         </div>
         
         <div class="energy-function">
