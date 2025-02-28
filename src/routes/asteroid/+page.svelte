@@ -3,6 +3,25 @@
     import * as d3 from 'd3';
     import * as math from 'mathjs';
   
+    // Color palette - elegant muted colors
+    const COLORS = {
+      primary: "#3c6382",       // Deep blue
+      secondary: "#82ccdd",     // Light blue
+      accent: "#60a3bc",        // Medium blue
+      highlight: "#6a89cc",     // Periwinkle
+      text: "#2c3e50",          // Dark slate
+      background: "#f5f6fa",    // Off-white
+      surface: "#dcdde1",       // Light gray
+      bond1: "#38ada9",         // Teal
+      bond2: "#6a89cc",         // Periwinkle
+      atom1: "#3c6382",         // Deep blue
+      atom2: "#60a3bc",         // Medium blue
+      atom3: "#82ccdd",         // Light blue
+      atom4: "#38ada9",         // Teal
+      success: "#78e08f",       // Soft green
+      error: "#e55039"          // Soft red
+    };
+
     // State variables
     let angle = 0; // in degrees (0-359)
     let velocity = 1; // velocity magnitude
@@ -72,6 +91,52 @@
       samples = [...samples, { angle: angleRad, velocity, energy }];
       updateGP();
     }
+
+    // Function to clear all samples
+    function clearSamples() {
+      samples = [];
+      gpPredictions = [];
+      drawContourPlot();
+    }
+
+    // Add sample by clicking on contour plot
+function handleContourClick(event) {
+  if (isLoading) return;
+  
+  const rect = contourCanvas.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const y = event.clientY - rect.top;
+  
+  // Check if the click is within the plot area
+  if (
+    x >= MARGIN && 
+    x <= WIDTH - MARGIN && 
+    y >= MARGIN && 
+    y <= HEIGHT - MARGIN
+  ) {
+    // Convert click coordinates to angle and velocity values using the scales
+    const clickedAngle = xScale.invert(x);
+    const clickedVelocity = yScale.invert(y);
+    
+    // Update the UI controls to match the clicked position
+    angle = clickedAngle;
+    velocity = clickedVelocity;
+    
+    // Calculate the energy at this point
+    const energy = calculateEnergy(angle, velocity);
+    
+    // Add sample at the clicked location (store angle in radians for consistency)
+    const angleRad = (angle * Math.PI) / 180;
+    samples = [...samples, { angle: angleRad, velocity, energy }];
+    
+    // Update the GP model
+    updateGP();
+    
+    // Update the astroid visualization
+    drawAstroid();
+  }
+}
+
   
     // Perform Gaussian Process regression using RBF kernel
     function updateGP() {
@@ -148,7 +213,9 @@
       const ctx = contourCanvas.getContext('2d');
       ctx.clearRect(0, 0, WIDTH, HEIGHT);
       
-      const colorScale = d3.scaleSequential(d3.interpolateViridis).domain([energyMin, energyMax]);
+      const colorScale = d3.scaleSequential(d3.interpolateViridis).
+                        domain([energyMax, energyMin])
+                        .interpolator(d3.interpolateViridis);
       
       if (showEnergyFunction || gpPredictions.length === 0) {
         const gridSize = 80;
@@ -184,8 +251,8 @@
       drawColorbar(ctx, colorScale);
       
       // Draw axes
-      ctx.strokeStyle = "#000";
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = COLORS.primary;
+      ctx.lineWidth = 2;
       ctx.beginPath();
       // X-axis (angle)
       ctx.moveTo(MARGIN, HEIGHT - MARGIN);
@@ -196,8 +263,8 @@
       ctx.stroke();
       
       // Axis labels
-      ctx.fillStyle = "#000";
-      ctx.font = "12px Arial";
+      ctx.fillStyle = COLORS.text;
+      ctx.font = "bold 14px Arial, sans-serif";
       ctx.textAlign = "center";
       
       ctx.fillText("0°", MARGIN, HEIGHT - MARGIN + 15);
@@ -216,10 +283,26 @@
         const x = xScale(s.angle * 180 / Math.PI);
         const y = yScale(s.velocity);
         
-        ctx.fillStyle = "#ff0000";
+        // Subtle glow
+        const glow = 8;
+        const gradient = ctx.createRadialGradient(x, y, 2, x, y, glow);
+        gradient.addColorStop(0, COLORS.highlight);
+        gradient.addColorStop(1, "rgba(106, 137, 204, 0)");
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(x, y, glow, 0, 2 * Math.PI);
+        ctx.fill();
+
+        // Inner point
+        ctx.fillStyle = COLORS.accent;
         ctx.beginPath();
         ctx.arc(x, y, 4, 0, 2 * Math.PI);
         ctx.fill();
+
+      // Border
+      ctx.strokeStyle = COLORS.primary;
+      ctx.lineWidth = 1;
+      ctx.stroke();
       });
     }
   
@@ -239,12 +322,12 @@
         ctx.fillRect(barX, barY + i * stepHeight, barWidth, stepHeight + 1);
       }
       
-      ctx.strokeStyle = "#000";
+      ctx.strokeStyle = COLORS.text;
       ctx.lineWidth = 1;
       ctx.strokeRect(barX, barY, barWidth, barHeight);
       
-      ctx.fillStyle = "#000";
-      ctx.font = "12px Arial";
+      ctx.fillStyle = COLORS.text;
+      ctx.font = "12px Arial, sans-serif";
       ctx.textAlign = "left";
       
       ctx.fillText(energyMin.toFixed(1), barX + barWidth + 5, barY + barHeight);
@@ -257,7 +340,7 @@
       ctx.translate(barX + barWidth + 25, barY + barHeight / 2);
       ctx.rotate(-Math.PI / 2);
       ctx.textAlign = "center";
-      ctx.fillText("Energy", 0, 0);
+      ctx.fillText("Distance to Earth", 0, 0);
       ctx.restore();
     }
   
@@ -359,42 +442,41 @@
       <div class="panel">
         <h2>Astroid Visualization</h2>
         <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
-        <div class="controls">
-          <div class="slider-container">
-            <label for="angle">Rotation Angle: {angle}°</label>
-            <input type="range" id="angle" min="0" max="359" bind:value={angle} />
-          </div>
-          <div class="slider-container">
-            <label for="velocity">Velocity: {velocity.toFixed(2)}</label>
-            <input type="range" id="velocity" min="0.1" max="3" step="0.05" bind:value={velocity} />
-          </div>
-          <button on:click={addSample} disabled={isLoading}>
-            {isLoading ? 'Processing...' : 'Add Sample'}
-          </button>
-          <button on:click={toggleEnergyFunction} class="info-button">
-            {showEnergyFunction ? 'Show GP Prediction' : 'Show Energy Function'}
-          </button>
-        </div>
       </div>
       <div class="panel">
         <h2>Energy Landscape</h2>
         <div class="contour-container">
-          <canvas bind:this={contourCanvas} width={WIDTH + 60} height={HEIGHT}></canvas>
+          <canvas 
+            bind:this={contourCanvas} 
+            width={WIDTH + 60} 
+            height={HEIGHT}
+            on:click={handleContourClick}
+            class={isLoading ? 'loading' : ''}
+          ></canvas>
         </div>
-        <div class="info">
-          <p>Samples: {samples.length}</p>
-          <p>Current energy: {calculateEnergy(angle, velocity).toFixed(2)}</p>
-          <div class="button-group">
-            {#if samples.length > 0}
-              <button on:click={() => { samples = []; updateGP(); }}>Clear Samples</button>
-            {/if}
-          </div>
-          <div class="energy-function">
-            <h3>About the Visualization:</h3>
-            <p>{showEnergyFunction ? 'Showing actual energy function' : 'Showing Gaussian Process prediction'}</p>
-            <p>The energy function represents different stable states of the system. Darker blue regions indicate lower energy (more stable states).</p>
-            <p>Click "Add Sample" at different points to build a GP model that learns this energy landscape.</p>
-          </div>
+
+      <div class="info">
+        <p>Samples: {samples.length}</p>
+        <p>Current energy: {calculateEnergy(angle, velocity).toFixed(2)}</p>
+        <div class="instruction">
+          <p class="highlight">Click on the plot above to add sample points and update the GP model</p>
+        </div>
+        <div class="button-group">
+          {#if samples.length > 0}
+            <button on:click={clearSamples}>Clear Samples</button>
+          {/if}
+          <button on:click={toggleEnergyFunction} class="info-button">
+            {showEnergyFunction ? 'Show GP Prediction' : 'Show Energy Function'}
+          </button>
+        </div>
+
+        <div class="energy-function">
+          <h3>About the Visualization:</h3>
+          <p>{showEnergyFunction ? 'Showing actual energy function' : 'Showing Gaussian Process prediction'}</p>
+          <p>The energy function represents different stable conformations of the protein backbone. Darker regions indicate lower energy (more stable conformations).</p>
+          <p>Click directly on the plot to add sample points and build a GP model that learns this energy landscape.</p>
+        </div>
+
         </div>
       </div>
     </div>
@@ -405,124 +487,206 @@
       max-width: 900px;
       margin: 0 auto;
       padding: 20px;
-      font-family: Arial, sans-serif;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f6fa 0%, #dfe4ea 100%);
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
     
     h1 {
       text-align: center;
       margin-bottom: 20px;
+      color: #3c6382;
+      font-size: 2.2em;
+      letter-spacing: 0.5px;
     }
     
-    h2 {
-      margin-top: 0;
-    }
-    
-    h3 {
-      margin-top: 15px;
-      margin-bottom: 5px;
-    }
-    
-    .container {
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-    }
-    
-    @media (max-width: 900px) {
-      .container {
-        flex-direction: column;
-      }
-    }
-    
-    .panel {
-      flex: 1;
-      background-color: #f5f5f5;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    canvas {
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-bottom: 15px;
-    }
-    
-    .contour-container {
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .controls, .info {
-      padding: 10px;
-      background-color: white;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-    }
-    
-    .slider-container {
-      margin-bottom: 15px;
-    }
-    
-    label {
-      display: block;
-      margin-bottom: 5px;
-    }
-    
-    input[type="range"] {
-      width: 100%;
-    }
-    
-    .button-group {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    
-    button {
-      background-color: #4CAF50;
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-      margin-top: 10px;
-    }
-    
-    button:hover {
-      background-color: #45a049;
-    }
-    
-    button:disabled {
-      background-color: #cccccc;
-      cursor: not-allowed;
-    }
-    
-    .info-button {
-      background-color: #2196F3;
-    }
-    
-    .info-button:hover {
-      background-color: #0b7dda;
-    }
-    
-    .energy-function {
-      margin-top: 15px;
-      padding: 10px;
-      background-color: #f8f8f8;
-      border-radius: 4px;
-      border-left: 4px solid #2196F3;
-    }
-    
-    pre {
-      background-color: #f1f1f1;
-      padding: 10px;
-      border-radius: 4px;
-      overflow-x: auto;
-      font-size: 12px;
-      line-height: 1.4;
-    }
-  </style>
+  h2 {
+    margin-top: 0;
+    color: #2c3e50;
+    font-weight: 500;
+  }
   
+  h3 {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: #3c6382;
+    font-weight: 500;
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
+  
+  @media (max-width: 900px) {
+    .container {
+      flex-direction: column;
+    }
+  }
+  
+  .panel {
+    flex: 1;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e8e8e8;
+  }
+  
+  canvas {
+    background-color: white;
+    border: 2px solid #3c6382;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  canvas.loading {
+    cursor: wait;
+    opacity: 0.7;
+    animation: pulse 1.5s infinite alternate;
+  }
+  
+  @keyframes pulse {
+    from { opacity: 0.6; }
+    to { opacity: 0.9; }
+  }
+  
+  .contour-container {
+    overflow: hidden;
+    position: relative;
+    border-radius: 8px;
+  }
+  
+  .contour-container canvas {
+    cursor: pointer;
+  }
+  
+  .controls, .info {
+    padding: 15px;
+    background: #f5f6fa;
+    border-radius: 8px;
+    border: 1px solid #dcdde1;
+  }
+  
+  .slider-container {
+    margin-bottom: 15px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 14px;
+  }
+  
+  input[type="range"] {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: linear-gradient(to right, #3c6382, #82ccdd);
+    -webkit-appearance: none;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #60a3bc;
+    border: 2px solid #fff;
+    cursor: pointer;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+  }
+  
+  button {
+    background: linear-gradient(to right, #3c6382, #60a3bc);
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+  
+  button:hover {
+    background: linear-gradient(to right, #2d4d62, #4a8094);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+  
+  button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  button:disabled {
+    background: linear-gradient(to right, #bdc3c7, #95a5a6);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .info-button {
+    background: linear-gradient(to right, #38ada9, #78e08f);
+  }
+  
+  .info-button:hover {
+    background: linear-gradient(to right, #2d8a85, #60b471);
+  }
+  
+  .energy-function {
+    margin-top: 15px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border-left: 4px solid #3c6382;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .instruction {
+    margin: 15px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #38ada9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .highlight {
+    font-weight: 500;
+    margin: 0;
+    color: #2c3e50;
+  }
+  
+  pre {
+    background-color: #f5f6fa;
+    padding: 10px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 12px;
+    line-height: 1.4;
+    border: 1px solid #dcdde1;
+  }
+  
+  p {
+    color: #2c3e50;
+    margin: 8px 0;
+    line-height: 1.5;
+  }
+</style>
