@@ -1,134 +1,153 @@
 <script>
-import { onMount } from 'svelte';
-import * as d3 from 'd3';
-import * as math from 'mathjs';
-import Pdbmol from  '$lib/Pdbmol.svelte';
-
-// State variables
-let phi = 0;
-let psi = 0;
-let samples = [];
-let gpPredictions = [];
-let canvas;
-let contourCanvas;
-let isLoading = false;
-let showEnergyFunction = false;
-// Constants
-const WIDTH = 400;
-const HEIGHT = 400;
-const MARGIN = 40;
-const PLOT_SIZE = WIDTH - 2 * MARGIN;
-
-// Scales for plotting
-const xScale = d3.scaleLinear([-Math.PI, Math.PI], [MARGIN, WIDTH - MARGIN]);
-const yScale = d3.scaleLinear([-Math.PI, Math.PI], [HEIGHT - MARGIN, MARGIN]);
-
-// Color palette - elegant muted colors
-const COLORS = {
-  primary: "#3c6382",       // Deep blue
-  secondary: "#82ccdd",     // Light blue
-  accent: "#60a3bc",        // Medium blue
-  highlight: "#6a89cc",     // Periwinkle
-  text: "#2c3e50",          // Dark slate
-  background: "#f5f6fa",    // Off-white
-  surface: "#dcdde1",       // Light gray
-  bond1: "#38ada9",         // Teal
-  bond2: "#6a89cc",         // Periwinkle
-  atom1: "#3c6382",         // Deep blue
-  atom2: "#60a3bc",         // Medium blue
-  atom3: "#82ccdd",         // Light blue
-  atom4: "#38ada9",         // Teal
-  success: "#78e08f",       // Soft green
-  error: "#e55039"          // Soft red
-};
-
-// Calculate min and max energy values for consistent color scaling
-let energyMin = Infinity;
-let energyMax = -Infinity;
-
-// Pre-calculate energy values across the domain to find min/max
-function calculateEnergyRange() {
-  const gridSize = 50;
-  const phiVals = math.range(-Math.PI, Math.PI, 2 * Math.PI / gridSize).toArray();
-  const psiVals = math.range(-Math.PI, Math.PI, 2 * Math.PI / gridSize).toArray();
+  import { onMount } from 'svelte';
+  import * as d3 from 'd3';
+  import * as math from 'mathjs';
+  import Pdbmol from '$lib/Pdbmol.svelte';
   
-  for (const gridPhi of phiVals) {
-    for (const gridPsi of psiVals) {
-      const energy = calculateEnergy(gridPhi, gridPsi);
-      energyMin = Math.min(energyMin, energy);
-      energyMax = Math.max(energyMax, energy);
+  // State variables
+  $: phi = 0;
+  $: psi = 0;
+  let samples = [];
+  let gpPredictions = [];
+  let canvas;
+  let contourCanvas;
+  let isLoading = false;
+  let showEnergyFunction = false;
+  let lives = 20; // Add lives state
+  let gameEnded = false; // Track if the game has ended
+  
+  // Constants
+  const WIDTH = 400;
+  const HEIGHT = 400;
+  const MARGIN = 40;
+  const PLOT_SIZE = WIDTH - 2 * MARGIN;
+  
+  // Scales for plotting
+  const xScale = d3.scaleLinear([-Math.PI, Math.PI], [MARGIN, WIDTH - MARGIN]);
+  const yScale = d3.scaleLinear([-Math.PI, Math.PI], [HEIGHT - MARGIN, MARGIN]);
+  
+  // Color palette - elegant muted colors
+  const COLORS = {
+    primary: "#3c6382",
+    secondary: "#82ccdd",
+    accent: "#60a3bc",
+    highlight: "#6a89cc",
+    text: "#2c3e50",
+    background: "#f5f6fa",
+    surface: "#dcdde1",
+    bond1: "#38ada9",
+    bond2: "#6a89cc",
+    atom1: "#3c6382",
+    atom2: "#60a3bc",
+    atom3: "#82ccdd",
+    atom4: "#38ada9",
+    success: "#78e08f",
+    error: "#e55039"
+  };
+  
+  // Calculate min and max energy values for consistent color scaling
+  let energyMin = Infinity;
+  let energyMax = -Infinity;
+  
+  // Pre-calculate energy values across the domain to find min/max
+  function calculateEnergyRange() {
+    const gridSize = 50;
+    const phiVals = math.range(-Math.PI, Math.PI, 2 * Math.PI / gridSize).toArray();
+    const psiVals = math.range(-Math.PI, Math.PI, 2 * Math.PI / gridSize).toArray();
+    
+    for (const gridPhi of phiVals) {
+      for (const gridPsi of psiVals) {
+        const energy = calculateEnergy(gridPhi, gridPsi);
+        energyMin = Math.min(energyMin, energy);
+        energyMax = Math.max(energyMax, energy);
+      }
+    }
+    
+    // Add a small buffer to the range
+    energyMin = Math.floor(energyMin * 10) / 10;
+    energyMax = Math.ceil(energyMax * 10) / 10;
+    
+    console.log(`Energy range: ${energyMin} to ${energyMax}`);
+  }
+  
+  // Energy function (as provided)
+  function calculateEnergy(phi, psi) {
+    const term1 = Math.exp(-((phi + Math.PI / 2) ** 2) - ((psi - Math.PI / 2) ** 2) / 0.5);
+    const term2 = Math.exp(-((phi + Math.PI / 2) ** 2) - ((psi + 0.5) ** 2) / 0.3);
+    const term3 = Math.exp(-((phi - Math.PI / 2) ** 2) - ((psi + Math.PI / 2) ** 2) / 0.5);
+    const term4 = Math.exp(-((phi - Math.PI / 2) ** 2) - ((psi - 0.5) ** 2) / 0.3);
+    const term5 = Math.exp(-((phi - 0) ** 2) / 0.3 - ((psi - Math.PI / 4) ** 2) / 0.2);
+    
+    const F = term1 + term2 + term3 + term4 + term5;
+    return -Math.log(F + 1e-6);
+  }
+  
+  // Function to add a new sample
+  function addSample() {
+    const energy = calculateEnergy(phi, psi);
+    samples = [...samples, { phi, psi, energy }];
+    updateGP();
+  }
+  
+  // Function to clear all samples
+  function clearSamples() {
+    samples = [];
+    gpPredictions = [];
+    drawContourPlot();
+  }
+  
+  // Add sample by clicking on contour plot
+  function handleContourClick(event) {
+    if (isLoading || lives <= 0) return; // Prevent clicks when out of lives
+    
+    const rect = contourCanvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    // Convert click coordinates to phi/psi values
+    const clickedPhi = xScale.invert(x);
+    const clickedPsi = yScale.invert(y);
+    
+    // Check if the click is within the plot area
+    if (
+      x >= MARGIN && 
+      x <= WIDTH - MARGIN && 
+      y >= MARGIN && 
+      y <= HEIGHT - MARGIN
+    ) {
+      // Update the current phi/psi values
+      phi = clickedPhi;
+      psi = clickedPsi;
+      
+      // Add sample at the clicked location
+      const energy = calculateEnergy(phi, psi);
+      samples = [...samples, { phi, psi, energy }];
+      
+      // Deduct one life
+      lives -= 1;
+      
+      // Check if lives reached 0
+      if (lives === 0) {
+        gameEnded = true; // Trigger game end
+      }
+      
+      // Update the GP model
+      updateGP();
+      
+      // Update the molecule visualization
+      drawMolecule();
     }
   }
   
-  // Add a small buffer to the range
-  energyMin = Math.floor(energyMin * 10) / 10;
-  energyMax = Math.ceil(energyMax * 10) / 10;
-  
-  console.log(`Energy range: ${energyMin} to ${energyMax}`);
-}
-
-// Energy function (as provided)
-function calculateEnergy(phi, psi) {
-  // Modified free energy function with multiple peaks along psi
-  const term1 = Math.exp(-((phi + Math.PI / 2) ** 2) - ((psi - Math.PI / 2) ** 2) / 0.5);
-  const term2 = Math.exp(-((phi + Math.PI / 2) ** 2) - ((psi + 0.5) ** 2) / 0.3);
-  const term3 = Math.exp(-((phi - Math.PI / 2) ** 2) - ((psi + Math.PI / 2) ** 2) / 0.5);
-  const term4 = Math.exp(-((phi - Math.PI / 2) ** 2) - ((psi - 0.5) ** 2) / 0.3);
-  const term5 = Math.exp(-((phi - 0) ** 2) / 0.3 - ((psi - Math.PI / 4) ** 2) / 0.2); // Central peak
-  
-  const F = term1 + term2 + term3 + term4 + term5;
-  return -Math.log(F + 1e-6); // Convert to free energy
-}
-
-// Function to add a new sample
-function addSample() {
-  const energy = calculateEnergy(phi, psi);
-  samples = [...samples, { phi, psi, energy }];
-  updateGP();
-}
-
-// Function to clear all samples
-function clearSamples() {
-  samples = [];
-  gpPredictions = [];
-  drawContourPlot();
-}
-
-// Add sample by clicking on contour plot
-function handleContourClick(event) {
-  if (isLoading) return;
-  
-  const rect = contourCanvas.getBoundingClientRect();
-  const x = event.clientX - rect.left;
-  const y = event.clientY - rect.top;
-  
-  // Convert click coordinates to phi/psi values
-  const clickedPhi = xScale.invert(x);
-  const clickedPsi = yScale.invert(y);
-  
-  // Check if the click is within the plot area
-  if (
-    x >= MARGIN && 
-    x <= WIDTH - MARGIN && 
-    y >= MARGIN && 
-    y <= HEIGHT - MARGIN
-  ) {
-    // Update the current phi/psi values
-    phi = clickedPhi;
-    psi = clickedPsi;
-    
-    // Add sample at the clicked location
-    const energy = calculateEnergy(phi, psi);
-    samples = [...samples, { phi, psi, energy }];
-    
-    // Update the GP model
-    updateGP();
-    
-    // Update the molecule visualization
-    drawMolecule();
+  // Reset the game
+  function resetGame() {
+    lives = 20;
+    samples = [];
+    gpPredictions = [];
+    gameEnded = false;
+    drawContourPlot();
   }
-}
-
+  
 // Perform Gaussian Process regression using RBF kernel
 function updateGP() {
   isLoading = true;
@@ -472,12 +491,11 @@ function toggleEnergyFunction() {
 }
 
 onMount(() => {
-  calculateEnergyRange(); // Calculate min/max energy values
+  calculateEnergyRange();
   drawMolecule();
-  drawContourPlot(); // Initial draw with energy function
+  drawContourPlot();
 });
 
-// Watch for changes to redraw
 $: {
   if (canvas && (phi || psi)) {
     drawMolecule();
@@ -488,13 +506,47 @@ $: {
 <main>
   <h1>Protein Backbone Conformation Explorer</h1>
   
+  <!-- Live Bar -->
+  <div class="live-bar-container">
+    <div class="lives-label">Lives {lives}/20</div>
+    <div class="live-bar">
+      <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
+      <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">❤️</span>
+    </div>
+  </div>
+
+  <!-- Game Ended Popup -->
+  {#if gameEnded}
+    <div class="game-ended-popup">
+      <div class="popup-content">
+        <h2>Game Ended</h2>
+        <p>You've used all your lives!</p>
+        <button on:click={resetGame}>Play Again</button>
+      </div>
+    </div>
+  {/if}
+
+
   <div class="container">
     <div class="panel">
       <h2>Backbone Angles</h2>
       <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
       
       <div class="Other">
-        <Pdbmol></Pdbmol>
+        <div class="control-panel">
+          <div class="slider-container">
+            <label for="angle">Psi Angle (degrees):</label>
+            <input type="range" id="angle" bind:value={psi} min="0" max="360" step="1" />
+            <span>{psi}°</span>
+          </div>
+          
+          <div class="slider-container">
+            <label for="phiAngle">Phi Angle (degrees):</label>
+            <input type="range" id="phiAngle" bind:value={phi} min="0" max="360" step="1" />
+            <span>{phi}°</span>
+          </div>
+        </div>
+        <Pdbmol bind:angle={phi} bind:phiAngle={psi}></Pdbmol>
       </div>
     </div>
     
@@ -537,6 +589,87 @@ $: {
 </main>
 
 <style>
+  /* Live Bar Container */
+  .live-bar-container {
+    margin: 20px 0;
+  }
+
+  /* Lives Label */
+  .lives-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+  /* Live Bar Styles */
+  .live-bar {
+    position: relative;
+    height: 30px;
+    background: #eee;
+    border-radius: 15px;
+    overflow: visible;
+  }
+
+  .lives-remaining {
+    height: 100%;
+    background: #ff4444;
+    transition: width 0.3s ease;
+    border-radius: 15px 0 0 15px;
+  }
+
+  .heart {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    transition: left 0.3s ease;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  }
+
+  /* Game Ended Popup Styles */
+  .game-ended-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .popup-content h2 {
+    color: #e55039;
+    margin-bottom: 20px;
+  }
+
+  .popup-content button {
+    background: #3c6382;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .popup-content button:hover {
+    background: #2d4d62;
+  }
+
+
     :root {
       --primary: #3c6382;
       --secondary: #82ccdd;
@@ -765,4 +898,36 @@ $: {
     margin: 8px 0;
     line-height: 1.5;
   }
+  .control-panel {
+		width: 100%;
+		padding: 15px;
+		background-color: #f5f5f5;
+		border-radius: 5px;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	.slider-container {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.slider-container label {
+		font-weight: bold;
+		min-width: 170px;
+	}
+
+	.slider-container input {
+		flex-grow: 1;
+		max-width: 400px;
+	}
+
+	.slider-container span {
+		min-width: 50px;
+		text-align: right;
+		font-weight: bold;
+	}
 </style>
