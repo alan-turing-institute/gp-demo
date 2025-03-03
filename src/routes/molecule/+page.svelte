@@ -528,7 +528,7 @@ $: {
         <div class="energy-function">
           <h3>About the Visualization:</h3>
           <p>{showEnergyFunction ? 'Showing actual energy function' : 'Showing Gaussian Process prediction'}</p>
-          <p>The energy function represents different stable conformations of the protein backbone. Darker regions indicate lower energy (more stable conformations).</p>
+          <p>The energy function represents different stable conformations of the protein backbone. Lighter regions indicate lower energy (more stable conformations).</p>
           <p>Click directly on the plot to add sample points and build a GP model that learns this energy landscape.</p>
         </div>
       </div>
