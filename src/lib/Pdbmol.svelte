@@ -116,24 +116,40 @@ END`;
 
 	// Viewer initialization
 	let viewer;
+	let viewerContainer;
+
 	onMount(async () => {
 		if (typeof window !== 'undefined') {
-			// Dynamically import 3Dmol.js in the browser
-			const { createViewer } = await import('3dmol');
-
-			// Create the viewer
-			viewer = createViewer(document.getElementById('viewer'), {
-				backgroundColor: 'white'
-			});
-
-			// Render the initial molecule
-			updateViewer();
+			try {
+				// Dynamically import 3Dmol.js in the browser
+				const { createViewer } = await import('3dmol');
+				console.log("3Dmol.js loaded successfully");
+				
+				// Create the viewer
+				viewer = createViewer(viewerContainer, {
+					backgroundColor: 'white'
+				});
+				
+				// Add the molecule to the viewer
+				updateViewer();
+				
+				// Ensure the viewer is responsive to container size
+				window.addEventListener('resize', () => {
+					if (viewer) {
+						viewer.resize();
+						viewer.render();
+					}
+				});
+			} catch (error) {
+				console.error("Failed to load 3Dmol.js:", error);
+			}
 		}
 	});
 
 	// Function to update the viewer with the rotated molecule
 	function updateViewer() {
 		if (viewer) {
+			console.log("Updating viewer with angle:", angle);
 			viewer.clear();
 			viewer.addModel(rotatedPdbData, 'pdb');
 			viewer.setStyle({}, { stick: { radius: 0.2 }, sphere: { scale: 0.3 } });
@@ -143,43 +159,76 @@ END`;
 	}
 
 	// Update the viewer whenever the angle changes
-	$: {
-    if (viewer) {
-        // Explicitly reference angle to ensure reactivity
-        console.log("Angle changed to:", angle);
-        rotatedPdbData = rotateAtoms(pdbData, indices, axisStartAtomIndex, axisEndAtomIndex, angle);
-        updateViewer();
-    }
-}
+	$: if (viewer && rotatedPdbData) {
+		console.log("Angle changed to:", angle);
+		updateViewer();
+	}
 </script>
 
-<!-- Control Panel -->
-<div class="control-panel">
-	<label for="angle">Rotation Angle (degrees):</label>
-	<input type="range" id="angle" bind:value={angle} min="0" max="360" step="1" />
-	<span>{angle}°</span>
-</div>
+<main>
+	<!-- Control Panel -->
+	<div class="control-panel">
+		<label for="angle">Rotation Angle (degrees):</label>
+		<input type="range" id="angle" bind:value={angle} min="0" max="360" step="1" />
+		<span>{angle}°</span>
+	</div>
 
-<!-- 3Dmol Viewer -->
-<div id="viewer"></div>
+	<!-- 3Dmol Viewer -->
+	<div class="viewer-container">
+		<div id="viewer" bind:this={viewerContainer}></div>
+	</div>
+</main>
 
 <style>
-	#viewer {
+	main {
 		width: 100%;
-		height: 600px;
+		max-width: 1000px;
+		margin: 0 auto;
+		padding: 20px;
+		box-sizing: border-box;
+	}
+
+	.viewer-container {
+		width: 100%;
+		aspect-ratio: 4/3;
 		border: 1px solid #ccc;
 		margin-top: 20px;
+		overflow: hidden;
+		position: relative;
+	}
+
+	#viewer {
+		width: 100%;
+		height: 100%;
+		position: absolute;
+		top: 0;
+		left: 0;
 	}
 
 	.control-panel {
-		margin-bottom: 20px;
+		width: 100%;
+		padding: 15px;
+		background-color: #f5f5f5;
+		border-radius: 5px;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		display: flex;
+		align-items: center;
+		gap: 10px;
 	}
 
 	.control-panel label {
-		margin-right: 10px;
+		font-weight: bold;
+		min-width: 170px;
 	}
 
 	.control-panel input {
-		width: 200px;
+		flex-grow: 1;
+		max-width: 400px;
+	}
+
+	.control-panel span {
+		min-width: 50px;
+		text-align: right;
+		font-weight: bold;
 	}
 </style>
