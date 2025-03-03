@@ -19,39 +19,46 @@ TER
 END`;
 
 	// Configuration
-	let indices = [6,7,8,9,10,11,12]; // Indices of atoms to rotate (1-based index)
-	let axisStartAtomIndex = 4; // Index of the first atom defining the axis
-	let axisEndAtomIndex = 5; // Index of the second atom defining the axis
-	let angle = 50; // Rotation angle in degrees
+	let indices = [6, 7, 8, 9, 10, 11, 12]; // Indices of atoms to rotate (1-based index)
+	let axisStartAtomIndex = 4; // Index of the first atom defining the first axis (N-CA)
+	let axisEndAtomIndex = 5; // Index of the second atom defining the first axis (N-CA)
+	let angle = 50; // First rotation angle in degrees (original)
+	let phiAngle = 0; // Second rotation angle in degrees (perpendicular to first)
+
+	// Function to calculate a perpendicular axis to a given axis
+	function calculatePerpendicularAxis(axisVector) {
+		// Create a perpendicular vector to axisVector
+		// Using cross product with unit vector (0,0,1) for simplicity
+		// If axisVector is parallel to (0,0,1), use (1,0,0) instead
+		let perpVector;
+		
+		if (Math.abs(axisVector.z) > 0.9) {
+			// If axisVector is close to parallel with z-axis, cross with x-axis
+			perpVector = {
+				x: 0,
+				y: axisVector.z,
+				z: -axisVector.y
+			};
+		} else {
+			// Cross with z-axis
+			perpVector = {
+				x: -axisVector.y,
+				y: axisVector.x,
+				z: 0
+			};
+		}
+		
+		// Normalize the perpendicular vector
+		let length = Math.sqrt(perpVector.x ** 2 + perpVector.y ** 2 + perpVector.z ** 2);
+		perpVector.x /= length;
+		perpVector.y /= length;
+		perpVector.z /= length;
+		
+		return perpVector;
+	}
 
 	// Function to rotate atoms around an axis
-	function rotateAtoms(pdbData, indices, axisStartAtomIndex, axisEndAtomIndex, angle) {
-		// Parse PDB data
-		let lines = pdbData.split('\n').filter(line => line.startsWith('ATOM'));
-		let atoms = lines.map(line => {
-			let x = parseFloat(line.substring(30, 38).trim());
-			let y = parseFloat(line.substring(38, 46).trim());
-			let z = parseFloat(line.substring(46, 54).trim());
-			return { x, y, z, line };
-		});
-
-		// Get the axis start and end points
-		let axisStart = atoms[axisStartAtomIndex - 1];
-		let axisEnd = atoms[axisEndAtomIndex - 1];
-
-		// Calculate the axis vector
-		let axisVector = {
-			x: axisEnd.x - axisStart.x,
-			y: axisEnd.y - axisStart.y,
-			z: axisEnd.z - axisStart.z
-		};
-
-		// Normalize the axis vector
-		let length = Math.sqrt(axisVector.x ** 2 + axisVector.y ** 2 + axisVector.z ** 2);
-		axisVector.x /= length;
-		axisVector.y /= length;
-		axisVector.z /= length;
-
+	function rotateAtomsAroundAxis(atoms, indices, axisStart, axisVector, angle) {
 		// Convert angle to radians
 		let rad = (angle * Math.PI) / 180;
 
@@ -95,14 +102,56 @@ END`;
 			atom.x = newX + axisStart.x;
 			atom.y = newY + axisStart.y;
 			atom.z = newZ + axisStart.z;
+		});
 
-			// Update the PDB line
-			let newLine = atom.line.substring(0, 30) +
+		return atoms;
+	}
+
+	// Main function to rotate atoms with both angles
+	function rotateAtoms(pdbData, indices, axisStartAtomIndex, axisEndAtomIndex, angle, phiAngle) {
+		// Parse PDB data
+		let lines = pdbData.split('\n').filter(line => line.startsWith('ATOM'));
+		let atoms = lines.map(line => {
+			let x = parseFloat(line.substring(30, 38).trim());
+			let y = parseFloat(line.substring(38, 46).trim());
+			let z = parseFloat(line.substring(46, 54).trim());
+			return { x, y, z, line };
+		});
+
+		// Get the axis start and end points
+		let axisStart = atoms[axisStartAtomIndex - 1];
+		let axisEnd = atoms[axisEndAtomIndex - 1];
+
+		// Calculate the first axis vector (same as original)
+		let axisVector = {
+			x: axisEnd.x - axisStart.x,
+			y: axisEnd.y - axisStart.y,
+			z: axisEnd.z - axisStart.z
+		};
+
+		// Normalize the axis vector
+		let length = Math.sqrt(axisVector.x ** 2 + axisVector.y ** 2 + axisVector.z ** 2);
+		axisVector.x /= length;
+		axisVector.y /= length;
+		axisVector.z /= length;
+
+		// Calculate a perpendicular axis for the phi rotation
+		let perpAxisVector = calculatePerpendicularAxis(axisVector);
+
+		// Perform both rotations
+		// First rotation: around the original axis (psi)
+		atoms = rotateAtomsAroundAxis(atoms, indices, axisStart, axisVector, angle);
+		
+		// Second rotation: around the perpendicular axis (phi)
+		atoms = rotateAtomsAroundAxis(atoms, indices, axisStart, perpAxisVector, phiAngle);
+
+		// Update the PDB lines with new coordinates
+		atoms.forEach(atom => {
+			atom.line = atom.line.substring(0, 30) +
 				atom.x.toFixed(3).padStart(8) +
 				atom.y.toFixed(3).padStart(8) +
 				atom.z.toFixed(3).padStart(8) +
 				atom.line.substring(54);
-			atom.line = newLine;
 		});
 
 		// Reconstruct the PDB data
@@ -110,9 +159,9 @@ END`;
 		return newPdbData;
 	}
 
-	// Reactive statement to update the molecule when the angle changes
+	// Reactive statement to update the molecule when either angle changes
 	let rotatedPdbData;
-	$: rotatedPdbData = rotateAtoms(pdbData, indices, axisStartAtomIndex, axisEndAtomIndex, angle);
+	$: rotatedPdbData = rotateAtoms(pdbData, indices, axisStartAtomIndex, axisEndAtomIndex, angle, phiAngle);
 
 	// Viewer initialization
 	let viewer;
@@ -149,7 +198,7 @@ END`;
 	// Function to update the viewer with the rotated molecule
 	function updateViewer() {
 		if (viewer) {
-			console.log("Updating viewer with angle:", angle);
+			console.log("Updating viewer with angles:", angle, phiAngle);
 			viewer.clear();
 			viewer.addModel(rotatedPdbData, 'pdb');
 			viewer.setStyle({}, { stick: { radius: 0.2 }, sphere: { scale: 0.3 } });
@@ -158,9 +207,8 @@ END`;
 		}
 	}
 
-	// Update the viewer whenever the angle changes
+	// Update the viewer whenever either angle changes
 	$: if (viewer && rotatedPdbData) {
-		console.log("Angle changed to:", angle);
 		updateViewer();
 	}
 </script>
@@ -168,9 +216,17 @@ END`;
 <main>
 	<!-- Control Panel -->
 	<div class="control-panel">
-		<label for="angle">Rotation Angle (degrees):</label>
-		<input type="range" id="angle" bind:value={angle} min="0" max="360" step="1" />
-		<span>{angle}°</span>
+		<div class="slider-container">
+			<label for="angle">Psi Angle (degrees):</label>
+			<input type="range" id="angle" bind:value={angle} min="0" max="360" step="1" />
+			<span>{angle}°</span>
+		</div>
+		
+		<div class="slider-container">
+			<label for="phiAngle">Phi Angle (degrees):</label>
+			<input type="range" id="phiAngle" bind:value={phiAngle} min="0" max="360" step="1" />
+			<span>{phiAngle}°</span>
+		</div>
 	</div>
 
 	<!-- 3Dmol Viewer -->
@@ -212,21 +268,27 @@ END`;
 		border-radius: 5px;
 		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 		display: flex;
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	.slider-container {
+		display: flex;
 		align-items: center;
 		gap: 10px;
 	}
 
-	.control-panel label {
+	.slider-container label {
 		font-weight: bold;
 		min-width: 170px;
 	}
 
-	.control-panel input {
+	.slider-container input {
 		flex-grow: 1;
 		max-width: 400px;
 	}
 
-	.control-panel span {
+	.slider-container span {
 		min-width: 50px;
 		text-align: right;
 		font-weight: bold;
