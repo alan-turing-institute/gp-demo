@@ -208,7 +208,7 @@
                       .domain([energyMax, energyMin])
                       .interpolator(d3.interpolateViridis);
     
-    if (showEnergyFunction || gpPredictions.length === 0) {
+    if (showEnergyFunction) {
       const gridSize = 80;
       const cellSize = PLOT_SIZE / gridSize;
       
@@ -223,6 +223,22 @@
           const y = yScale(velocityVal);
           
           ctx.fillStyle = colorScale(energy);
+          ctx.fillRect(x - cellSize / 2, y - cellSize / 2, cellSize, cellSize);
+        }
+      }
+    } else if (gpPredictions.length === 0){  
+      const gridSize = 80;
+      const cellSize = PLOT_SIZE / gridSize;
+
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          const bVal = 5000 + ((5 * R_e - 5000) * i) / gridSize;
+          const velocityVal = 3 + ((20 - 3) * j) / gridSize;
+
+          const x = xScale(bVal);
+          const y = yScale(velocityVal);
+
+          ctx.fillStyle = colorScale(0);
           ctx.fillRect(x - cellSize / 2, y - cellSize / 2, cellSize, cellSize);
         }
       }

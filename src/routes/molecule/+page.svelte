@@ -247,7 +247,7 @@ function drawContourPlot() {
     .interpolator(d3.interpolateViridis);
   
   // If we should display the energy function instead of GP predictions
-  if (showEnergyFunction || gpPredictions.length === 0) {
+  if (showEnergyFunction) {
     // Draw the actual energy function
     const gridSize = 80;
     const cellSize = PLOT_SIZE / gridSize;
@@ -265,7 +265,23 @@ function drawContourPlot() {
         ctx.fillRect(x - cellSize/2, y - cellSize/2, cellSize, cellSize);
       }
     }
-  } else {
+  } else if (gpPredictions.length === 0){  
+      const gridSize = 80;
+      const cellSize = PLOT_SIZE / gridSize;
+
+      for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+          const bVal = 5000 + ((5 * R_e - 5000) * i) / gridSize;
+          const velocityVal = 3 + ((20 - 3) * j) / gridSize;
+
+          const x = xScale(bVal);
+          const y = yScale(velocityVal);
+
+          ctx.fillStyle = colorScale(0);
+          ctx.fillRect(x - cellSize / 2, y - cellSize / 2, cellSize, cellSize);
+        }
+      }
+    } else {
     // Draw GP predictions
     const cellSize = PLOT_SIZE / Math.sqrt(gpPredictions.length);
     
