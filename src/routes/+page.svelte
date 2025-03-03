@@ -80,7 +80,7 @@
 
         <div class="hero">
             <h2>Train your own emulator</h2>
-            <p>Adjust parameters, observe the results, and see how well your emulator learns to mimic the simulation.</p>
+            <p>Adjust parameters, observe the results, and test how well your emulator can replicate the simulation.</p>
             <div class="cards">
             <div class="card">
                 <div class="card-img asteroid-img"></div>
@@ -104,11 +104,11 @@
         
         <div class="hero">
             <div class="additional-text">
-                <h2>AutoEmulate softwrae package</h2>
+                <h2>AutoEmulate software package</h2>
                 <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators. </p>
             </div>
             
-            <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">Visit AutoEmulate website</a>
+            <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">Visit the AutoEmulate website</a>
           </div>
       </div>
 
