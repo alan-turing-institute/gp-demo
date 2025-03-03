@@ -59,7 +59,7 @@
           <div class="feature-images">
             {#each [
               { src: '/heart.png', alt: 'Heart', text: 'To understand complex real-world systems, researchers and engineers often construct computer simulations.' },
-              { src: '/engine.jpg', alt: 'Engine', text: 'Simulations can be computationally expensive and take hours, days or even weeks to run.' },
+              { src: '/engine.jpg', alt: 'Engine', text: 'Simulations are often computationally expensive and can take hours, days or even weeks to run.' },
               { src: '/materials.gif', alt: 'Materials', text: 'A classic solution is to approximate simulations with efficient emulators, which can be orders of magnitudes faster.' }
             ] as feature, i}
               <div class="feature-image-container" on:click={() => toggleFeature(i)}>
@@ -80,7 +80,7 @@
 
         <div class="hero">
             <h2>Train your own emulator</h2>
-            
+            <p>Adjust parameters, observe the results, and see how well your emulator learns to mimic the simulation.</p>
             <div class="cards">
             <div class="card">
                 <div class="card-img asteroid-img"></div>
@@ -104,11 +104,11 @@
         
         <div class="hero">
             <div class="additional-text">
-                <h2>AutoEmulate package</h2>
-                <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators that reduce computation time from days or weeks to seconds. This allows us to dramatically accelerate research in areas where low latency is important, such as modelling cardiac patients’ hearts or environmental forecasting. </p>
+                <h2>AutoEmulate softwrae package</h2>
+                <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators. </p>
             </div>
             
-            <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">AutoEmulate website</a>
+            <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">Visit AutoEmulate website</a>
           </div>
       </div>
 
