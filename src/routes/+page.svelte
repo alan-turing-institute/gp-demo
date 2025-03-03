@@ -30,7 +30,7 @@
   </script>
   
   <main>
-    <header>
+    <!-- <header>
       <div class="container">
         <div class="header-content">
           <div class="logo-container">
@@ -39,16 +39,16 @@
             </div>
             <h1 class="site-title">AutoEmulate</h1>
           </div>
-          <!-- <nav>
+           <nav>
             <ul>
               {#each navLinks as link}
                 <li><a href={link.url}>{link.name}</a></li>
               {/each}
             </ul>
           </nav> -->
-        </div>
+        <!-- </div>
       </div>
-    </header>
+    </header> -->
     
     <div class="main-content">
       <div class="container">
