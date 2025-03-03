@@ -87,7 +87,7 @@
                 <div class="card-content">
                 <!-- <h3>Asteroid Simulation</h3>
                 <p>Text.</p> -->
-                <a href="/asteroid" class="btn">Launch Asteroid App</a>
+                <a href="https://alan-turing-institute.github.io/gp-demo/asteroid" class="btn">Launch Asteroid App</a>
                 </div>
             </div>
             
@@ -96,7 +96,7 @@
                 <div class="card-content">
                 <!-- <h3>Molecular Simulation</h3>
                 <p>Text.</p> -->
-                <a href="/molecule" class="btn">Launch Molecule App</a>
+                <a href="https://alan-turing-institute.github.io/gp-demo/molecule" class="btn">Launch Molecule App</a>
                 </div>
             </div>          
             </div>
