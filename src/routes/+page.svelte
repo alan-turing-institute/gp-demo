@@ -58,9 +58,9 @@
           
           <div class="feature-images">
             {#each [
-              { src: '/heart.png', alt: 'Heart', text: 'To understand complex real-world systems, researchers and engineers often construct computer simulations.' },
-              { src: '/engine.jpg', alt: 'Engine', text: 'Simulations are often computationally expensive and can take hours, days or even weeks to run.' },
-              { src: '/materials.gif', alt: 'Materials', text: 'A classic solution is to approximate simulations with efficient emulators, which can be orders of magnitudes faster.' }
+              { src: 'https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/heart.png', alt: 'Heart', text: 'To understand complex real-world systems, researchers and engineers often construct computer simulations.' },
+              { src: 'https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/engine.jpg', alt: 'Engine', text: 'Simulations are often computationally expensive and can take hours, days or even weeks to run.' },
+              { src: 'https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/materials.gif', alt: 'Materials', text: 'A classic solution is to approximate simulations with efficient emulators, which can be orders of magnitudes faster.' }
             ] as feature, i}
               <div class="feature-image-container" on:click={() => toggleFeature(i)}>
                 {#if $toggled[i]}
