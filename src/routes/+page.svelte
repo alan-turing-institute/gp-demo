@@ -14,6 +14,19 @@
     //   { name: 'Privacy', url: '#privacy' },
     //   { name: 'Contact', url: '#contact' }
     // ];
+    import { writable } from 'svelte/store';
+
+    // Create a store to track the toggled state of each image
+    const toggled = writable([false, false, false]);
+
+    // Toggle function
+    function toggleFeature(index) {
+        toggled.update(state => {
+        const newState = [...state];
+        newState[index] = !newState[index];
+        return newState;
+        });
+    }
   </script>
   
   <main>
@@ -44,15 +57,19 @@
           <p>To understand complex real-world systems, researchers and engineers often construct computer simulations. These can be computationally expensive and can take hours, days or even weeks to run.</p>
           
           <div class="feature-images">
-            <div class="feature-image-container">
-              <img src="/heart.png" alt="Heart" class="feature-image">
-            </div>
-            <div class="feature-image-container">
-              <img src="/engine.jpg" alt="Engine" class="feature-image">
-            </div>
-            <div class="feature-image-container">
-              <img src="/materials.gif" alt="Materials" class="feature-image">
-            </div>
+            {#each [
+              { src: '/heart.png', alt: 'Heart', text: 'Cardio-vascular CFD simulations take hours-days.' },
+              { src: '/engine.jpg', alt: 'Engine', text: 'Air flor in a single stage aero-engine takes days-weeks.' },
+              { src: '/materials.gif', alt: 'Materials', text: 'Ab Initio Quantuam simulations for materials weeks-months.' }
+            ] as feature, i}
+              <div class="feature-image-container" on:click={() => toggleFeature(i)}>
+                {#if $toggled[i]}
+                  <p class="feature-text">{feature.text}</p>
+                {:else}
+                  <img src={feature.src} alt={feature.alt} class="feature-image" />
+                {/if}
+              </div>
+            {/each}
           </div>
           
           <div class="additional-text">
@@ -194,29 +211,35 @@
     }
     
     .feature-images {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      margin: 30px 0;
-      /* background: white; */
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 30px 0;
     }
-    
     .feature-image-container {
-      width: 30%;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      background: white;
-      align-items: center;
+    width: 30%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: white;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    padding: 20px;
+    text-align: center;
     }
-    
     .feature-image {
-      width: 100%;
-      height: auto;
-      display: block;
-      transition: transform 0.3s ease;
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s ease;
     }
-    
+    .feature-text {
+    font-size: 1rem;
+    color: #333;
+    }
+
     .feature-image:hover {
       transform: scale(1.05);
     }
