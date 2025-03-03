@@ -271,11 +271,11 @@ function drawContourPlot() {
 
       for (let i = 0; i < gridSize; i++) {
         for (let j = 0; j < gridSize; j++) {
-          const bVal = 5000 + ((5 * R_e - 5000) * i) / gridSize;
-          const velocityVal = 3 + ((20 - 3) * j) / gridSize;
-
-          const x = xScale(bVal);
-          const y = yScale(velocityVal);
+          const phi = 0 + 360 * i / gridSize;
+        const psi = 0 + 360 * j / gridSize;
+        
+        const x = xScale(phi);
+        const y = yScale(psi);
 
           ctx.fillStyle = colorScale(0);
           ctx.fillRect(x - cellSize / 2, y - cellSize / 2, cellSize, cellSize);
