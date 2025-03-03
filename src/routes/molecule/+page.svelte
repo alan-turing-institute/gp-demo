@@ -70,9 +70,9 @@
     console.log(`Energy range: ${energyMin} to ${energyMax}`);
   }
 
-function degToRad(degrees) {
+  function degToRad(degrees) {
     return degrees * (Math.PI / 180);
-}
+  }
 
   // Energy function (as provided)
   function calculateEnergy(phi, psi) {
@@ -87,8 +87,19 @@ function degToRad(degrees) {
     const term4 = Math.exp(-((phiRad - Math.PI / 2) ** 2) - ((psiRad - 0.5) ** 2) / 0.3);
     const term5 = Math.exp(-((phiRad - 0) ** 2) / 0.3 - ((psiRad - Math.PI / 4) ** 2) / 0.2);
 
-    
-    const F = term1 + term2 + term3 + term4 + term5;
+    let F = 0;
+    if (difficulty == 1) {
+      F = term1
+    }
+    else if(difficulty == 2) {
+      F = term1 + term2
+    }
+    else if (difficulty == 3) {
+      F = term1 + term2 + term3 + term4 + term5
+    }
+    else {
+      console.error("Invalid difficulty level: ", difficulty);
+    }
     return -Math.log(F + 1e-6);
   }
   
@@ -528,6 +539,15 @@ $: {
     drawMolecule();
   }
 }
+
+$: difficulty = 3;
+
+function handleChange(event) {
+  difficulty = event.target.value;
+  if(showEnergyFunction) drawContourPlot();
+  console.log("Difficulty level set to: ", difficulty);
+}
+
 </script>
 
 <main>
@@ -553,6 +573,14 @@ $: {
     </div>
   {/if}
 
+  <div class="level-container">
+    <label for="level" class="level-container">Difficulty:</label>
+    <select id="level" bind:value={difficulty} on:change={handleChange}>
+      <option value=1>Level 1</option>
+      <option value=2>Level 2</option>
+      <option value=3>Level 3</option>
+    </select>
+  </div>
 
   <div class="container">
     <div class="panel">
@@ -619,6 +647,13 @@ $: {
   /* Live Bar Container */
   .live-bar-container {
     margin: 20px 0;
+  }
+
+  .level-container {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: Arial, sans-serif;
   }
 
   /* Lives Label */
