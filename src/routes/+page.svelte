@@ -24,7 +24,7 @@
             <div class="logo">
               <img src="https://raw.githubusercontent.com/alan-turing-institute/autoemulate/refs/heads/main/misc/AE_logo_final.png" alt="AutoEmulate Logo" class="logo-image">
             </div>
-            <h1 class="site-title">AutoEmulate demo</h1>
+            <h1 class="site-title">AutoEmulate</h1>
           </div>
           <!-- <nav>
             <ul>
@@ -58,37 +58,37 @@
           <div class="additional-text">
             <p>For many tasks many simulation runs are needed in practice. A classic solution is to approximate simulations with efficient emulators, which can be orders of magnitudes faster.</p>
           </div>
-          <h2>Interactive demo</h2>
-        </div>
-
-        
-        
-        <div class="cards">
-          <div class="card">
-            <div class="card-img asteroid-img"></div>
-            <div class="card-content">
-              <h3>Asteroid Simulation</h3>
-              <p>Text.</p>
-              <a href="/asteroid" class="btn">Launch Asteroid App</a>
-            </div>
-          </div>
           
-          <div class="card">
-            <div class="card-img molecule-img"></div>
-            <div class="card-content">
-              <h3>Molecular Simulation</h3>
-              <p>Text.</p>
-              <a href="/molecule" class="btn">Launch Molecule App</a>
-            </div>
-          </div>          
         </div>
 
         <div class="hero">
+            <h2>Interactive demo</h2>
+            <p>Some text here motivating the demos...</p>
+            <div class="cards">
+            <div class="card">
+                <div class="card-img asteroid-img"></div>
+                <div class="card-content">
+                <h3>Asteroid Simulation</h3>
+                <p>Text.</p>
+                <a href="/asteroid" class="btn">Launch Asteroid App</a>
+                </div>
+            </div>
             
+            <div class="card">
+                <div class="card-img molecule-img"></div>
+                <div class="card-content">
+                <h3>Molecular Simulation</h3>
+                <p>Text.</p>
+                <a href="/molecule" class="btn">Launch Molecule App</a>
+                </div>
+            </div>          
+            </div>
+        </div>
+        
+        <div class="hero">
             <div class="additional-text">
                 <h2>AutoEmulate package</h2>
                 <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators for these simulations that reduce computation time from days or weeks to seconds. This allows us to dramatically accelerate research in areas where low latency is important, such as modelling cardiac patients’ hearts or environmental forecasting. </p>
-
             </div>
             
             <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">AutoEmulate website</a>
