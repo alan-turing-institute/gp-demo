@@ -180,7 +180,7 @@ END`;
 				});
 				
 				// Add the molecule to the viewer
-				updateViewer();
+				updateViewer(true);
 				
 				// Ensure the viewer is responsive to container size
 				window.addEventListener('resize', () => {
@@ -196,20 +196,22 @@ END`;
 	});
 
 	// Function to update the viewer with the rotated molecule
-	function updateViewer() {
+	function updateViewer(zoomTo = true) {
 		if (viewer) {
 			console.log("Updating viewer with angles:", angle, phiAngle);
 			viewer.clear();
 			viewer.addModel(rotatedPdbData, 'pdb');
 			viewer.setStyle({}, { stick: { radius: 0.2 }, sphere: { scale: 0.3 } });
-			viewer.zoomTo();
+			if(zoomTo) {
+				viewer.zoomTo();
+			}
 			viewer.render();
 		}
 	}
 
 	// Update the viewer whenever either angle changes
 	$: if (viewer && rotatedPdbData) {
-		updateViewer();
+		updateViewer(false);
 	}
 </script>
 
