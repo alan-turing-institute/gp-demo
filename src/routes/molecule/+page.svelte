@@ -5,8 +5,8 @@ import * as math from 'mathjs';
 import Pdbmol from  '$lib/Pdbmol.svelte';
 
 // State variables
-let phi = 0;
-let psi = 0;
+$: phi = 0;
+$: psi = 0;
 let samples = [];
 let gpPredictions = [];
 let canvas;
@@ -494,7 +494,21 @@ $: {
       <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
       
       <div class="Other">
-        <Pdbmol></Pdbmol>
+      <!-- Control Panel -->
+	    <div class="control-panel">
+        <div class="slider-container">
+          <label for="angle">Psi Angle (degrees):</label>
+          <input type="range" id="angle" bind:value={psi} min="0" max="360" step="1" />
+          <span>{psi}°</span>
+        </div>
+        
+        <div class="slider-container">
+          <label for="phiAngle">Phi Angle (degrees):</label>
+          <input type="range" id="phiAngle" bind:value={phi} min="0" max="360" step="1" />
+          <span>{phi}°</span>
+        </div>
+      </div>
+        <Pdbmol bind:angle={phi} bind:phiAngle={psi}></Pdbmol>
       </div>
     </div>
     
@@ -743,4 +757,36 @@ $: {
     margin: 8px 0;
     line-height: 1.5;
   }
+  .control-panel {
+		width: 100%;
+		padding: 15px;
+		background-color: #f5f5f5;
+		border-radius: 5px;
+		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	.slider-container {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.slider-container label {
+		font-weight: bold;
+		min-width: 170px;
+	}
+
+	.slider-container input {
+		flex-grow: 1;
+		max-width: 400px;
+	}
+
+	.slider-container span {
+		min-width: 50px;
+		text-align: right;
+		font-weight: bold;
+	}
 </style>

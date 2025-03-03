@@ -22,8 +22,8 @@ END`;
 	let indices = [6, 7, 8, 9, 10, 11, 12]; // Indices of atoms to rotate (1-based index)
 	let axisStartAtomIndex = 4; // Index of the first atom defining the first axis (N-CA)
 	let axisEndAtomIndex = 5; // Index of the second atom defining the first axis (N-CA)
-	let angle = 50; // First rotation angle in degrees (original)
-	let phiAngle = 0; // Second rotation angle in degrees (perpendicular to first)
+	export let angle = 50; // First rotation angle in degrees (original)
+	export let phiAngle = 0; // Second rotation angle in degrees (perpendicular to first)
 
 	// Function to calculate a perpendicular axis to a given axis
 	function calculatePerpendicularAxis(axisVector) {
@@ -216,21 +216,6 @@ END`;
 </script>
 
 <main>
-	<!-- Control Panel -->
-	<div class="control-panel">
-		<div class="slider-container">
-			<label for="angle">Psi Angle (degrees):</label>
-			<input type="range" id="angle" bind:value={angle} min="0" max="360" step="1" />
-			<span>{angle}°</span>
-		</div>
-		
-		<div class="slider-container">
-			<label for="phiAngle">Phi Angle (degrees):</label>
-			<input type="range" id="phiAngle" bind:value={phiAngle} min="0" max="360" step="1" />
-			<span>{phiAngle}°</span>
-		</div>
-	</div>
-
 	<!-- 3Dmol Viewer -->
 	<div class="viewer-container">
 		<div id="viewer" bind:this={viewerContainer}></div>
@@ -261,38 +246,5 @@ END`;
 		position: absolute;
 		top: 0;
 		left: 0;
-	}
-
-	.control-panel {
-		width: 100%;
-		padding: 15px;
-		background-color: #f5f5f5;
-		border-radius: 5px;
-		box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-		display: flex;
-		flex-direction: column;
-		gap: 15px;
-	}
-
-	.slider-container {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-	}
-
-	.slider-container label {
-		font-weight: bold;
-		min-width: 170px;
-	}
-
-	.slider-container input {
-		flex-grow: 1;
-		max-width: 400px;
-	}
-
-	.slider-container span {
-		min-width: 50px;
-		text-align: right;
-		font-weight: bold;
 	}
 </style>
