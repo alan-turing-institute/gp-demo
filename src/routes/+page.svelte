@@ -54,13 +54,13 @@
       <div class="container">
         <div class="hero">
           <h2>Accelerating large-scale simulations with AI</h2>
-          <p>To understand complex real-world systems, researchers and engineers often construct computer simulations. These can be computationally expensive and can take hours, days or even weeks to run.</p>
+          <p>Click on the images below to learn more about the project.</p>
           
           <div class="feature-images">
             {#each [
-              { src: '/heart.png', alt: 'Heart', text: 'Cardio-vascular CFD simulations take hours-days.' },
-              { src: '/engine.jpg', alt: 'Engine', text: 'Air flor in a single stage aero-engine takes days-weeks.' },
-              { src: '/materials.gif', alt: 'Materials', text: 'Ab Initio Quantuam simulations for materials weeks-months.' }
+              { src: '/heart.png', alt: 'Heart', text: 'To understand complex real-world systems, researchers and engineers often construct computer simulations.' },
+              { src: '/engine.jpg', alt: 'Engine', text: 'Simulations can be computationally expensive and take hours, days or even weeks to run.' },
+              { src: '/materials.gif', alt: 'Materials', text: 'A classic solution is to approximate simulations with efficient emulators, which can be orders of magnitudes faster.' }
             ] as feature, i}
               <div class="feature-image-container" on:click={() => toggleFeature(i)}>
                 {#if $toggled[i]}
@@ -72,15 +72,15 @@
             {/each}
           </div>
           
-          <div class="additional-text">
+          <!-- <div class="additional-text">
             <p>For many tasks many simulation runs are needed in practice. A classic solution is to approximate simulations with efficient emulators, which can be orders of magnitudes faster.</p>
-          </div>
+          </div> -->
           
         </div>
 
         <div class="hero">
-            <h2>Interactive demo</h2>
-            <p>Some text here motivating the demos...</p>
+            <h2>Train your own emulator</h2>
+            
             <div class="cards">
             <div class="card">
                 <div class="card-img asteroid-img"></div>
@@ -105,7 +105,7 @@
         <div class="hero">
             <div class="additional-text">
                 <h2>AutoEmulate package</h2>
-                <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators for these simulations that reduce computation time from days or weeks to seconds. This allows us to dramatically accelerate research in areas where low latency is important, such as modelling cardiac patients’ hearts or environmental forecasting. </p>
+                <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators that reduce computation time from days or weeks to seconds. This allows us to dramatically accelerate research in areas where low latency is important, such as modelling cardiac patients’ hearts or environmental forecasting. </p>
             </div>
             
             <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">AutoEmulate website</a>
