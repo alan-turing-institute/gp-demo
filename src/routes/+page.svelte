@@ -85,8 +85,8 @@
             <div class="card">
                 <div class="card-img asteroid-img"></div>
                 <div class="card-content">
-                <h3>Asteroid Simulation</h3>
-                <p>Text.</p>
+                <!-- <h3>Asteroid Simulation</h3>
+                <p>Text.</p> -->
                 <a href="/asteroid" class="btn">Launch Asteroid App</a>
                 </div>
             </div>
@@ -94,8 +94,8 @@
             <div class="card">
                 <div class="card-img molecule-img"></div>
                 <div class="card-content">
-                <h3>Molecular Simulation</h3>
-                <p>Text.</p>
+                <!-- <h3>Molecular Simulation</h3>
+                <p>Text.</p> -->
                 <a href="/molecule" class="btn">Launch Molecule App</a>
                 </div>
             </div>          
