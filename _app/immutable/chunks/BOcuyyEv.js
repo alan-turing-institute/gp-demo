@@ -1,0 +1,1 @@
+import{O as S,M as h,L as k,q,S as L}from"./C_nTGglK.js";function t(r,i){return r===i||(r==null?void 0:r[L])===i}function T(r={},i,a,M){return S(()=>{var f,s;return h(()=>{f=s,s=[],k(()=>{r!==a(...s)&&(i(r,...s),f&&t(a(...f),r)&&i(null,...f))})}),()=>{q(()=>{s&&t(a(...s),r)&&i(null,...s)})}}),r}export{T as b};
