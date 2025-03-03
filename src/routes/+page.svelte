@@ -59,8 +59,8 @@
           <div class="feature-images">
             {#each [
               { src: 'https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/heart.png', alt: 'Heart', text: 'To understand complex real-world systems, researchers and engineers often construct computer simulations.' },
-              { src: 'https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/engine.jpg', alt: 'Engine', text: 'Simulations are often computationally expensive and can take hours, days or even weeks to run.' },
-              { src: 'https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/materials.gif', alt: 'Materials', text: 'A classic solution is to approximate simulations with efficient emulators, which can be orders of magnitudes faster.' }
+              { src: 'https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/engine.jpg', alt: 'Engine', text: 'Simulations are computationally expensive and can take hours, days or even weeks to run.' },
+              { src: 'https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/materials.gif', alt: 'Materials', text: 'Emulators are fast, accurate models trained to replace simulations in real world applications.' }
             ] as feature, i}
               <div class="feature-image-container" on:click={() => toggleFeature(i)}>
                 {#if $toggled[i]}
@@ -71,16 +71,11 @@
               </div>
             {/each}
           </div>
-          
-          <!-- <div class="additional-text">
-            <p>For many tasks many simulation runs are needed in practice. A classic solution is to approximate simulations with efficient emulators, which can be orders of magnitudes faster.</p>
-          </div> -->
-          
         </div>
 
         <div class="hero">
             <h2>Train your own emulator</h2>
-            <p>Adjust parameters, observe the results, and test how well your emulator can replicate the simulation.</p>
+            <p>Adjust parameters, observe results, and test how well your emulator performs.</p>
             <div class="cards">
             <div class="card">
                 <div class="card-img asteroid-img"></div>
@@ -103,14 +98,21 @@
         </div>
         
         <div class="hero">
-            <div class="additional-text">
-                <h2>AutoEmulate software package</h2>
-                <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators. </p>
+          <h2>Software</h2>          
+          <div class="cards">
+            <div class="card card-horizontal">
+              <div class="card-img-side autoemulate-img-container">
+                <img src="https://raw.githubusercontent.com/alan-turing-institute/autoemulate/refs/heads/main/misc/AE_logo_final.png" alt="AutoEmulate Logo" class="autoemulate-logo">
+              </div>
+              <div class="card-content">
+                <!-- <h3>AutoEmulate</h3> -->
+                <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators for accelerating complex simulations.</p>
+                <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">Website</a>
+              </div>
             </div>
-            
-            <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">Visit the AutoEmulate website</a>
           </div>
-      </div>
+        </div>
+        
 
     </div>
 
@@ -467,6 +469,45 @@
       .feature-image-container {
         width: 80%;
         margin-bottom: 15px;
+      }
+    }
+
+    .card-horizontal {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      max-width: 800px;
+    }
+    
+    .card-img-side {
+      width: 30%;
+      min-width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      padding: 20px;
+    }
+    
+    .autoemulate-img-container {
+      background: linear-gradient(rgba(60, 99, 130, 0.6), rgba(60, 99, 130, 0.2));
+    }
+    
+    .autoemulate-logo {
+      width: 90%;
+      height: auto;
+      object-fit: contain;
+      z-index: 1;
+    }
+    
+    @media (max-width: 768px) {
+      .card-horizontal {
+        flex-direction: column;
+      }
+      
+      .card-img-side {
+        width: 100%;
+        height: 180px;
       }
     }
   </style>
