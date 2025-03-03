@@ -88,13 +88,13 @@
     const term5 = Math.exp(-((phiRad - 0) ** 2) / 0.3 - ((psiRad - Math.PI / 4) ** 2) / 0.2);
 
     let F = 0;
-    if (difficulty == 1) {
+    if (difficulty == "1") {
       F = term1
     }
-    else if(difficulty == 2) {
+    else if(difficulty == "2") {
       F = term1 + term2
     }
-    else if (difficulty == 3) {
+    else if (difficulty == "3") {
       F = term1 + term2 + term3 + term4 + term5
     }
     else {
@@ -540,7 +540,7 @@ $: {
   }
 }
 
-$: difficulty = 3;
+$: difficulty = "3";
 
 function handleChange(event) {
   difficulty = event.target.value;
@@ -574,11 +574,11 @@ function handleChange(event) {
   {/if}
 
   <div class="level-container">
-    <label for="level" class="level-container">Difficulty:</label>
+    <label for="level" class="level-label">Difficulty:</label>
     <select id="level" bind:value={difficulty} on:change={handleChange}>
-      <option value=1>Level 1</option>
-      <option value=2>Level 2</option>
-      <option value=3>Level 3</option>
+      <option value="1">Level 1</option>
+      <option value="2">Level 2</option>
+      <option value="3">Level 3</option>
     </select>
   </div>
 
@@ -653,7 +653,16 @@ function handleChange(event) {
     display: flex;
     align-items: baseline;
     gap: 8px;
+    font-size: 16px;
     font-family: Arial, sans-serif;
+  }
+
+  .level-label,
+  select {
+    display: flex;
+    align-items: baseline;
+    font-size: 16px;
+    font-weight: 500;
   }
 
   /* Lives Label */
