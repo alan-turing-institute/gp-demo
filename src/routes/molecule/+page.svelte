@@ -580,7 +580,7 @@ $: {
         <div class="energy-function">
           <h3>About the Visualization:</h3>
           <p>{showEnergyFunction ? 'Showing actual energy function' : 'Showing Gaussian Process prediction'}</p>
-          <p>The energy function represents different stable conformations of the protein backbone. Darker regions indicate lower energy (more stable conformations).</p>
+          <p>The energy function represents different stable conformations of the protein backbone. Lighter regions indicate lower energy (more stable conformations).</p>
           <p>Click directly on the plot to add sample points and build a GP model that learns this energy landscape.</p>
         </div>
       </div>
@@ -670,15 +670,37 @@ $: {
   }
 
 
-  main {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background: linear-gradient(135deg, #f5f6fa 0%, #dfe4ea 100%);
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  }
+    :root {
+      --primary: #3c6382;
+      --secondary: #82ccdd;
+      --accent: #60a3bc;
+      --highlight: #6a89cc;
+      --text: #2c3e50;
+      --background: #f5f6fa;
+      --surface: #dcdde1;
+      --success: #78e08f;
+    }
+    
+    :global(body) {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--background) 0%, var(--surface) 100%);
+      margin: 0;
+      padding: 0;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }   
+
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      /* background: linear-gradient(135deg, #f5f6fa 0%, #dfe4ea 100%); */
+      /* border-radius: 10px; */
+      /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); */
+    }
   
   h1 {
     text-align: center;
