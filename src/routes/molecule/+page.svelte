@@ -23,8 +23,8 @@
   const PLOT_SIZE = WIDTH - 2 * MARGIN;
   
   // Scales for plotting
-  const xScale = d3.scaleLinear([-Math.PI, Math.PI], [MARGIN, WIDTH - MARGIN]);
-  const yScale = d3.scaleLinear([-Math.PI, Math.PI], [HEIGHT - MARGIN, MARGIN]);
+  const xScale = d3.scaleLinear([0, 360], [MARGIN, WIDTH - MARGIN]);
+  const yScale = d3.scaleLinear([0, 360], [HEIGHT - MARGIN, MARGIN]);
   
   // Color palette - elegant muted colors
   const COLORS = {
@@ -52,8 +52,8 @@
   // Pre-calculate energy values across the domain to find min/max
   function calculateEnergyRange() {
     const gridSize = 50;
-    const phiVals = math.range(-Math.PI, Math.PI, 2 * Math.PI / gridSize).toArray();
-    const psiVals = math.range(-Math.PI, Math.PI, 2 * Math.PI / gridSize).toArray();
+    const phiVals = math.range(0, 360, 360 / gridSize).toArray();
+    const psiVals = math.range(0, 360, 360 / gridSize).toArray();
     
     for (const gridPhi of phiVals) {
       for (const gridPsi of psiVals) {
@@ -66,17 +66,27 @@
     // Add a small buffer to the range
     energyMin = Math.floor(energyMin * 10) / 10;
     energyMax = Math.ceil(energyMax * 10) / 10;
-    
+
     console.log(`Energy range: ${energyMin} to ${energyMax}`);
   }
-  
+
+function degToRad(degrees) {
+    return degrees * (Math.PI / 180);
+}
+
   // Energy function (as provided)
   function calculateEnergy(phi, psi) {
-    const term1 = Math.exp(-((phi + Math.PI / 2) ** 2) - ((psi - Math.PI / 2) ** 2) / 0.5);
-    const term2 = Math.exp(-((phi + Math.PI / 2) ** 2) - ((psi + 0.5) ** 2) / 0.3);
-    const term3 = Math.exp(-((phi - Math.PI / 2) ** 2) - ((psi + Math.PI / 2) ** 2) / 0.5);
-    const term4 = Math.exp(-((phi - Math.PI / 2) ** 2) - ((psi - 0.5) ** 2) / 0.3);
-    const term5 = Math.exp(-((phi - 0) ** 2) / 0.3 - ((psi - Math.PI / 4) ** 2) / 0.2);
+    // Convert degrees to radians and translate to -pi, pi
+    const phiRad = degToRad(phi) - Math.PI;
+    const psiRad = degToRad(psi) - Math.PI;
+
+    // Modified free energy function with multiple peaks along psi
+    const term1 = Math.exp(-((phiRad + Math.PI / 2) ** 2) - ((psiRad - Math.PI / 2) ** 2) / 0.5);
+    const term2 = Math.exp(-((phiRad + Math.PI / 2) ** 2) - ((psiRad + 0.5) ** 2) / 0.3);
+    const term3 = Math.exp(-((phiRad - Math.PI / 2) ** 2) - ((psiRad + Math.PI / 2) ** 2) / 0.5);
+    const term4 = Math.exp(-((phiRad - Math.PI / 2) ** 2) - ((psiRad - 0.5) ** 2) / 0.3);
+    const term5 = Math.exp(-((phiRad - 0) ** 2) / 0.3 - ((psiRad - Math.PI / 4) ** 2) / 0.2);
+
     
     const F = term1 + term2 + term3 + term4 + term5;
     return -Math.log(F + 1e-6);
@@ -105,8 +115,8 @@
     const y = event.clientY - rect.top;
     
     // Convert click coordinates to phi/psi values
-    const clickedPhi = xScale.invert(x);
-    const clickedPsi = yScale.invert(y);
+    const clickedPhi = Math.round(xScale.invert(x));
+    const clickedPsi = Math.round(yScale.invert(y));
     
     // Check if the click is within the plot area
     if (
@@ -164,7 +174,8 @@ function updateGP() {
     const y = samples.map(s => s.energy);
     
     // RBF kernel function
-    const rbf = (x1, x2, lengthScale = 1.0) => {
+    // TODO: see if a different lengthscale works better
+    const rbf = (x1, x2, lengthScale = 1.0*(180 / Math.PI)) => {
       const squaredDist = math.sum(math.dotPow(math.subtract(x1, x2), 2));
       return math.exp(-0.5 * squaredDist / (lengthScale * lengthScale));
     };
@@ -186,8 +197,8 @@ function updateGP() {
     
     // Compute predictions over a grid
     const gridSize = 40;
-    const phiVals = math.range(-Math.PI, Math.PI, 2 * Math.PI / gridSize).toArray();
-    const psiVals = math.range(-Math.PI, Math.PI, 2 * Math.PI / gridSize).toArray();
+    const phiVals = math.range(0, 360, 360 / gridSize).toArray();
+    const psiVals = math.range(0, 360, 360 / gridSize).toArray();
     
     gpPredictions = [];
     
@@ -243,8 +254,8 @@ function drawContourPlot() {
     
     for (let i = 0; i < gridSize; i++) {
       for (let j = 0; j < gridSize; j++) {
-        const phi = -Math.PI + (2 * Math.PI * i) / gridSize;
-        const psi = -Math.PI + (2 * Math.PI * j) / gridSize;
+        const phi = 0 + 360 * i / gridSize;
+        const psi = 0 + 360 * j / gridSize;
         
         const energy = calculateEnergy(phi, psi);
         const x = xScale(phi);
@@ -290,17 +301,17 @@ function drawContourPlot() {
   ctx.textAlign = "center";
   
   // X-axis labels
-  ctx.fillText("-π", MARGIN, HEIGHT - MARGIN + 15);
-  ctx.fillText("0", (WIDTH) / 2, HEIGHT - MARGIN + 15);
-  ctx.fillText("π", WIDTH - MARGIN, HEIGHT - MARGIN + 15);
-  ctx.fillText("φ", WIDTH - MARGIN + 15, HEIGHT - MARGIN + 5);
+  ctx.fillText("0", MARGIN, HEIGHT - MARGIN + 15);
+  ctx.fillText("180", (WIDTH) / 2, HEIGHT - MARGIN + 15);
+  ctx.fillText("360", WIDTH - MARGIN, HEIGHT - MARGIN + 15);
+  ctx.fillText("φ", WIDTH - MARGIN + 10, HEIGHT - MARGIN + 25);
   
   // Y-axis labels
   ctx.textAlign = "right";
-  ctx.fillText("-π", MARGIN - 5, HEIGHT - MARGIN);
-  ctx.fillText("0", MARGIN - 5, (HEIGHT) / 2);
-  ctx.fillText("π", MARGIN - 5, MARGIN);
-  ctx.fillText("ψ", MARGIN - 15, MARGIN - 10);
+  ctx.fillText("0", MARGIN - 5, HEIGHT - MARGIN);
+  ctx.fillText("180", MARGIN - 5, (HEIGHT) / 2);
+  ctx.fillText("360", MARGIN - 5, MARGIN);
+  ctx.fillText("ψ", MARGIN - 20, MARGIN - 20);
   
   // Draw sample points with elegant style
   samples.forEach(s => {
@@ -370,7 +381,7 @@ function drawColorbar(ctx, colorScale) {
   ctx.translate(barX + barWidth + 25, barY + barHeight/2);
   ctx.rotate(-Math.PI/2);
   ctx.textAlign = "center";
-  ctx.fillText("Energy", 0, 0);
+  ctx.fillText("Energy", 0, 10);
   ctx.restore();
 }
 
@@ -418,7 +429,7 @@ function drawMolecule() {
   // Draw bonds with phi and psi angles
   ctx.save();
   ctx.translate(centerX - radius/2, centerY);
-  ctx.rotate(phi);
+  ctx.rotate(degToRad(phi));
   
   // Create elegant gradient for phi bond
   const phiGradient = ctx.createLinearGradient(0, 0, 0, -60);
@@ -434,12 +445,12 @@ function drawMolecule() {
   // Phi text with elegant styling
   ctx.fillStyle = COLORS.text;
   ctx.font = "bold 14px Arial, sans-serif";
-  ctx.fillText("φ = " + phi.toFixed(2), 5, -30);
+  ctx.fillText("φ = " + phi.toFixed(0), 5, -30);
   ctx.restore();
   
   ctx.save();
   ctx.translate(centerX, centerY);
-  ctx.rotate(psi);
+  ctx.rotate(degToRad(psi));
   
   // Create elegant gradient for psi bond
   const psiGradient = ctx.createLinearGradient(0, 0, 0, -60);
@@ -455,7 +466,7 @@ function drawMolecule() {
   // Psi text with elegant styling
   ctx.fillStyle = COLORS.text;
   ctx.font = "bold 14px Arial, sans-serif";
-  ctx.fillText("ψ = " + psi.toFixed(2), 5, -30);
+  ctx.fillText("ψ = " + psi.toFixed(0), 5, -30);
   ctx.restore();
   
   // Draw atoms with subtle glow effects
