@@ -3,26 +3,26 @@
 
 	// Initial PDB data
 	let pdbData = `
-ATOM      2  CH3 ACE     1       2.000   2.090   0.000
-ATOM      5  C   ACE     1       3.427   2.641  -0.000
-ATOM      6  O   ACE     1       4.391   1.877  -0.000
-ATOM      7  N   ALA     2       3.555   3.970  -0.000
-ATOM      9  CA  ALA     2       4.853   4.614  -0.000
-ATOM     10  HA  ALA     2       5.408   4.316   0.890
-ATOM     11  CB  ALA     2       5.661   4.221  -1.232
-ATOM     15  C   ALA     2       4.713   6.129   0.000
-ATOM     16  O   ALA     2       3.601   6.653   0.000
-ATOM     17  N   NME     3       5.846   6.835   0.000
-ATOM     18  H   NME     3       6.737   6.359  -0.000
-ATOM     19  CH3 NME     3       5.846   8.284   0.000
+ATOM      1  CH3 ACE     1       2.000   2.090   0.000
+ATOM      2  C   ACE     1       3.427   2.641  -0.000
+ATOM      3  O   ACE     1       4.391   1.877  -0.000
+ATOM      4  N   ALA     2       3.555   3.970  -0.000
+ATOM      5  CA  ALA     2       4.853   4.614  -0.000
+ATOM     6  HA  ALA     2       5.408   4.316   0.890
+ATOM     7  CB  ALA     2       5.661   4.221  -1.232
+ATOM     8  C   ALA     2       4.713   6.129   0.000
+ATOM     9  O   ALA     2       3.601   6.653   0.000
+ATOM     10  N   NME     3       5.846   6.835   0.000
+ATOM     11  H   NME     3       6.737   6.359  -0.000
+ATOM     12  CH3 NME     3       5.846   8.284   0.000
 TER   
 END`;
 
 	// Configuration
-	let indices = [1, 2, 3, 4]; // Indices of atoms to rotate (1-based index)
-	let axisStartAtomIndex = 1; // Index of the first atom defining the axis
-	let axisEndAtomIndex = 2; // Index of the second atom defining the axis
-	let angle = 90; // Rotation angle in degrees
+	let indices = [6,7,8,9,10,11,12]; // Indices of atoms to rotate (1-based index)
+	let axisStartAtomIndex = 4; // Index of the first atom defining the axis
+	let axisEndAtomIndex = 5; // Index of the second atom defining the axis
+	let angle = 50; // Rotation angle in degrees
 
 	// Function to rotate atoms around an axis
 	function rotateAtoms(pdbData, indices, axisStartAtomIndex, axisEndAtomIndex, angle) {
@@ -144,10 +144,13 @@ END`;
 
 	// Update the viewer whenever the angle changes
 	$: {
-		if (viewer) {
-			updateViewer();
-		}
-	}
+    if (viewer) {
+        // Explicitly reference angle to ensure reactivity
+        console.log("Angle changed to:", angle);
+        rotatedPdbData = rotateAtoms(pdbData, indices, axisStartAtomIndex, axisEndAtomIndex, angle);
+        updateViewer();
+    }
+}
 </script>
 
 <!-- Control Panel -->
