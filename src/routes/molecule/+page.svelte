@@ -103,6 +103,14 @@
     return -Math.log(F + 1e-6);
   }
   
+  // Implement score functionality
+  function scoreR2(phi, psi) {
+    const energy = calculateEnergy(phi, psi);
+    const score = 1 - (energy - energyMin) / (energyMax - energyMin);
+    return Math.max(0, score);
+  }
+
+
   // Function to add a new sample
   function addSample() {
     const energy = calculateEnergy(phi, psi);
@@ -163,23 +171,40 @@
   // Reset the game
   function resetGame() {
     lives = 20;
+    score = 0;
     samples = [];
     gpPredictions = [];
     gameEnded = false;
     drawContourPlot();
   }
   
+  $: score = 0.0;
+  function calculateR2(actual, predicted) {
+    if (actual.length !== predicted.length || actual.length === 0) {
+        throw new Error("Arrays must be of the same length and non-empty");
+    }
+    const meanActual = actual.reduce((sum, val) => sum + val, 0) / actual.length;
+    const sst = actual.reduce((sum, val) => sum + Math.pow(val - meanActual, 2), 0);
+    const ssr = actual.reduce((sum, val, i) => sum + Math.pow(val - predicted[i], 2), 0);
+    const r2 = 1 - ssr / sst;
+    // Make score positive
+    return Math.max(0, r2);
+  }
+
 // Perform Gaussian Process regression using RBF kernel
 function updateGP() {
   isLoading = true;
-  
+  let groundTruth = [];
+  let predicted = [];
+
   // Need at least one sample for GP
   if (samples.length === 0) {
     isLoading = false;
     drawContourPlot(); // Still need to redraw to show empty plot
     return;
   }
-  setTimeout(() => {
+  setTimeout(() => {  
+    console.log("Updating GP model...");
     // Prepare training data
     const X = samples.map(s => [s.phi, s.psi]);
     const y = samples.map(s => s.energy);
@@ -234,6 +259,10 @@ function updateGP() {
             psi: gridPsi,
             predicted: mean
           });
+
+          predicted.push(mean);
+          groundTruth.push(calculateEnergy(gridPhi, gridPsi));
+          
         } catch (e) {
           console.error("Error in GP calculation:", e);
         }
@@ -241,6 +270,10 @@ function updateGP() {
     }
     
     drawContourPlot();
+    // update score
+    score = calculateR2(groundTruth, predicted);
+    console.log("R2 Score: ", score);
+    
     isLoading = false;
   }, 50); // Small timeout to allow UI to update
 }
@@ -562,12 +595,22 @@ function handleChange(event) {
     </div>
   </div>
 
+  <!-- Score Bar -->
+  <div class="score-bar-container">
+    <div class="score-label">Score: <span id="score-percentage">{(score * 100).toFixed(0)}%</span></div>
+    <div class="score-bar">
+      <div class="score-value" id="score-bar" style="width: {score * 100}%"></div>
+      <span class="star" id="score-star" style="left: {score * 100}%">⭐</span>
+    </div>
+  </div>
+
   <!-- Game Ended Popup -->
   {#if gameEnded}
     <div class="game-ended-popup">
       <div class="popup-content">
         <h2>Game Ended</h2>
         <p>You've used all your lives!</p>
+        <p>Final score: {(score * 100).toFixed(0)}%</p>
         <button on:click={resetGame}>Play Again</button>
       </div>
     </div>
@@ -649,22 +692,6 @@ function handleChange(event) {
     margin: 20px 0;
   }
 
-  .level-container {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    font-size: 16px;
-    font-family: Arial, sans-serif;
-  }
-
-  .level-label,
-  select {
-    display: flex;
-    align-items: baseline;
-    font-size: 16px;
-    font-weight: 500;
-  }
-
   /* Lives Label */
   .lives-label {
     font-size: 18px;
@@ -681,6 +708,7 @@ function handleChange(event) {
     background: #eee;
     border-radius: 15px;
     overflow: visible;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
   }
 
   .lives-remaining {
@@ -697,6 +725,66 @@ function handleChange(event) {
     font-size: 24px;
     transition: left 0.3s ease;
     filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  }
+
+  /* Score Container */
+  .score-bar-container {
+    margin: 20px 0;
+  }
+
+  /* Score Label */
+  .score-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+  /* Score Bar */
+  .score-bar {
+    position: relative;
+    height: 30px;
+    background: #eee;
+    border-radius: 15px;
+    overflow: visible;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Score Value */
+  .score-value {
+    height: 100%;
+    background: #FFD700;
+    transition: width 0.3s ease-in-out;
+    border-radius: 15px 0 0 15px;
+  }
+
+  /* Star Indicator */
+  .star {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #FFD700;
+    transition: left 0.3s ease-in-out;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Level Container */
+  .level-container {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+  }
+
+  .level-label,
+  select {
+    display: flex;
+    align-items: baseline;
+    font-size: 16px;
+    font-weight: 500;
   }
 
   /* Game Ended Popup Styles */
