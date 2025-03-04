@@ -160,7 +160,8 @@
   function drawContourPlot() {
     if (!contourCanvas) return;
     const ctx = contourCanvas.getContext('2d');
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    // ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.clearRect(0, 0, contourCanvas.width, contourCanvas.height);
     const colorScale = d3.scaleSequential(d3.interpolateViridis)
                       .domain([energyMax, energyMin])
                       .interpolator(d3.interpolateViridis);
@@ -207,14 +208,14 @@
     ctx.textAlign = "center";
     ctx.fillText("5000", MARGIN, HEIGHT - MARGIN + 15);
     ctx.fillText(String(5 * R_e), WIDTH - MARGIN, HEIGHT - MARGIN + 15);
-    ctx.fillText("Impact parameter (km)", WIDTH / 2, HEIGHT - MARGIN + 30);
+    ctx.fillText("Impact parameter (km)", WIDTH / 2, HEIGHT - MARGIN + 20);
     
     // Y-axis labels (velocity)
     ctx.textAlign = "right";
     ctx.fillText("3", MARGIN - 10, HEIGHT - MARGIN);
     ctx.fillText("20", MARGIN - 10, MARGIN);
     ctx.save();
-    ctx.translate(MARGIN - 30, HEIGHT / 2);
+    ctx.translate(MARGIN - 15, HEIGHT / 2 - 25);
     ctx.rotate(-Math.PI / 2);
     ctx.fillText("Velocity (km/s)", 0, 0);
     ctx.restore();
@@ -286,16 +287,16 @@
     const midY = barY + barHeight / 2;
     ctx.beginPath();
     ctx.moveTo(barX, midY);
-    ctx.lineTo(barX + barWidth, midY);
+    // ctx.lineTo(barX + barWidth, midY);
     ctx.stroke();
-    ctx.fillText(((energyMin + energyMax) / 2).toFixed(1), barX + barWidth + offset, midY + 5);
+    // ctx.fillText(((energyMin + energyMax) / 2).toFixed(1), barX + barWidth + offset, midY + 5);
     
     // Rotated label for the colorbar remains on the left side of the bar.
     ctx.save();
     ctx.translate(barX - 25, barY + barHeight / 2);
     ctx.rotate(Math.PI / 2);
     ctx.textAlign = "center";
-    ctx.fillText("Flyby Distance (km)", 0, 0);
+    ctx.fillText("Flyby Distance (km)", 0, -60);
     ctx.restore();
   }
 
@@ -350,6 +351,14 @@
     ctx.strokeStyle = COLORS.primary;
     ctx.lineWidth = 2;
     ctx.stroke();
+
+    // Label the asteroid with a small text.
+    ctx.fillStyle = COLORS.text;
+    ctx.font = "12px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Asteroid", xPos, yPos + asteroidRadius + 15);
+
+
     
     // Draw the horizontal velocity vector (scaled by 10).
     const velocityScale = 10;
@@ -377,7 +386,7 @@
     ctx.fillStyle = COLORS.text;
     ctx.font = "12px Arial";
     ctx.textAlign = "center";
-    ctx.fillText("velocity", velMidX, velMidY - 10);
+    ctx.fillText("velocity", velMidX + 25, velMidY - 10);
     
     // Draw a contextual Earth with a radial gradient.
     const earthRadius = 20;
@@ -442,7 +451,7 @@
     ctx.fillStyle = COLORS.text;
     ctx.font = "12px Arial";
     ctx.textAlign = "center";
-    ctx.fillText("Earth", earthX, earthY - earthRadius - 5);
+    ctx.fillText("Earth", earthX, earthY + earthRadius + 15);
     
     // Display current impact parameter and velocity.
     ctx.fillStyle = COLORS.text;
@@ -478,7 +487,7 @@
       <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
     </div>
     <div class="panel">
-      <h2>Energy Landscape</h2>
+      <h2>Flyby distance past Earth</h2>
       <div class="contour-container">
         <canvas 
           bind:this={contourCanvas} 
