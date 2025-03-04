@@ -649,22 +649,6 @@ function handleChange(event) {
     margin: 20px 0;
   }
 
-  .level-container {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    font-size: 16px;
-    font-family: Arial, sans-serif;
-  }
-
-  .level-label,
-  select {
-    display: flex;
-    align-items: baseline;
-    font-size: 16px;
-    font-weight: 500;
-  }
-
   /* Lives Label */
   .lives-label {
     font-size: 18px;
@@ -697,6 +681,23 @@ function handleChange(event) {
     font-size: 24px;
     transition: left 0.3s ease;
     filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  }
+
+  /* Level Container */
+  .level-container {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+  }
+
+  .level-label,
+  select {
+    display: flex;
+    align-items: baseline;
+    font-size: 16px;
+    font-weight: 500;
   }
 
   /* Game Ended Popup Styles */
