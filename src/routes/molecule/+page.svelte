@@ -639,13 +639,13 @@ function handleChange(event) {
       <div class="Other">
         <div class="control-panel">
           <div class="slider-container">
-            <label for="angle">Psi Angle (degrees):</label>
+            <label for="angle">ψ Angle (degrees):</label>
             <input type="range" id="angle" bind:value={psi} min="0" max="360" step="1" />
             <span>{psi}°</span>
           </div>
           
           <div class="slider-container">
-            <label for="phiAngle">Phi Angle (degrees):</label>
+            <label for="phiAngle">φ Angle (degrees):</label>
             <input type="range" id="phiAngle" bind:value={phi} min="0" max="360" step="1" />
             <span>{phi}°</span>
           </div>
