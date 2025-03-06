@@ -84,8 +84,6 @@
           <div class="card">
               <div class="card-img asteroid-img"></div>
               <div class="card-content">
-              <h3>Asteroid Simulation</h3>
-              <p>Explore asteroid dynamics with an interactive emulator.</p>
               <a href="https://alan-turing-institute.github.io/gp-demo/asteroid" class="btn">Launch Asteroid App</a>
               </div>
           </div>
@@ -93,8 +91,6 @@
           <div class="card">
               <div class="card-img molecule-img"></div>
               <div class="card-content">
-              <h3>Molecular Simulation</h3>
-              <p>Study molecular behaviors through AI-powered emulation.</p>
               <a href="https://alan-turing-institute.github.io/gp-demo/molecule" class="btn">Launch Molecule App</a>
               </div>
           </div>          
