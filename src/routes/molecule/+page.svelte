@@ -123,6 +123,7 @@
     samples = [];
     gpPredictions = [];
     drawContourPlot();
+    lives=20;
   }
   
   // Add sample by clicking on contour plot

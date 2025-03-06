@@ -512,7 +512,7 @@
       </div>
       <div class="info">
         <p>Samples: {samples.length}</p>
-        <p>Current energy: {calculateEnergy(angle, velocity).toFixed(2)}</p>
+        <p>Current flyby distance: {calculateEnergy(angle, velocity).toFixed(2)}</p>
         <div class="instruction">
           <p class="highlight">Your goal is to train an accurate emulator using as few simulator runs as possible.</p>
           <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
