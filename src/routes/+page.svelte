@@ -105,7 +105,7 @@
       
       <div class="hero">
         <h2>Project goals</h2>          
-        <p>Click on the images to discover what we're working on.</p>
+        <!-- <p>Click on the images to discover what we're working on.</p>
         <div class="feature-images">
           {#each [
             { src: '', alt: 'Advanced emulators', title: 'Advanced emulators', text: 'Sparse GPs... model ensembles... handling spatio-temporal data' },
@@ -123,23 +123,44 @@
               </div>
             </div>
           {/each}
-        </div>
+        </div> -->
 
-        <!-- <div class="cards">
-          <div class="card card-horizontal">
-            <div class="card-img-side autoemulate-img-container">
-              <img src="https://raw.githubusercontent.com/alan-turing-institute/autoemulate/refs/heads/main/misc/AE_logo_final.png" alt="AutoEmulate Logo" class="autoemulate-logo">
-            </div>
-            <div class="card-content">
-              <h3>AutoEmulate</h3>
-              <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators for accelerating complex simulations.</p>
-              <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">Website</a>
-            </div>
+        <div class="cards">
+
+        <div class='card card-horizontal'>
+          <div class="card-img-side autoemulate-img-container">
+            <img src="https://users.flatironinstitute.org/~polymathic/data/the_well/datasets/viscoelastic_instability/gif/czz_normalized.gif">
+          </div>
+          <div class="card-content">
+            <h3>Advanced emulators</h3>
           </div>
         </div>
-      </div> -->
-      
 
+        <div class='card card-horizontal'>
+          <div class="card-img-side autoemulate-img-container">
+            <img src="https://users.flatironinstitute.org/~polymathic/data/the_well/datasets/rayleigh_taylor_instability/gif/density_normalized.gif">
+          </div>
+          <div class="card-content">
+            <h3>Simulator in the loop</h3>
+          </div>
+        </div>
+
+
+
+        <div class="card card-horizontal">
+          <div class="card-img-side autoemulate-img-container">
+            <img src="https://raw.githubusercontent.com/alan-turing-institute/autoemulate/refs/heads/main/misc/AE_logo_final.png" alt="AutoEmulate Logo" class="autoemulate-logo">
+          </div>
+          <div class="card-content">
+            <h3>Software</h3>
+            <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators for accelerating complex simulations.</p>
+            <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">Website</a>
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
   </div>
 
   
