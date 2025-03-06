@@ -31,6 +31,8 @@
   let contourCanvas;
   let isLoading = false;
   let showEnergyFunction = false;
+  let lives = 20; // Add lives state
+  let gameEnded = false; // Track if the game has ended
 
   // Constants for the flyby function
   const mu = 398600.4418; // km^3/s^2
@@ -76,6 +78,13 @@
     console.log(`Energy range: ${energyMin} to ${energyMax}`);
   }
 
+  function scoreR2(b, gridVelocity) {
+    const energy = calculateEnergy(b, gridVelocity);
+    const score = 1 - (energy - energyMin) / (energyMax - energyMin);
+    return Math.max(0, score);
+  }
+
+
   function addSample() {
     const energy = calculateEnergy(angle, velocity);
     samples = [...samples, { angle, velocity, energy }];
@@ -86,10 +95,13 @@
     samples = [];
     gpPredictions = [];
     drawContourPlot();
+    lives=20;
+    score=0;
   }
 
   function handleContourClick(event) {
-    if (isLoading) return;
+    if (isLoading || lives <= 0) return; // Prevent clicks when out of lives
+
     const rect = contourCanvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
@@ -100,14 +112,47 @@
       velocity = clickedVelocity;
       const energy = calculateEnergy(angle, velocity);
       samples = [...samples, { angle, velocity, energy }];
+
+      // Deduct one life
+      lives -= 1;
+      
+      // Check if lives reached 0
+      if (lives === 0) {
+        gameEnded = true; // Trigger game end
+      }
+
       updateGP();
       drawAstroid();
     }
   }
 
+  function resetGame() {
+    lives = 20;
+    score = 0;
+    samples = [];
+    gpPredictions = [];
+    gameEnded = false;
+    drawContourPlot();
+  }
+  $: score = 0.0;
+  function calculateR2(actual, predicted) {
+    if (actual.length !== predicted.length || actual.length === 0) {
+        throw new Error("Arrays must be of the same length and non-empty");
+    }
+    const meanActual = actual.reduce((sum, val) => sum + val, 0) / actual.length;
+    const sst = actual.reduce((sum, val) => sum + Math.pow(val - meanActual, 2), 0);
+    const ssr = actual.reduce((sum, val, i) => sum + Math.pow(val - predicted[i], 2), 0);
+    const r2 = 1 - ssr / sst;
+    // Make score positive
+    return Math.max(0, r2);
+  }
+
   // GP regression using an RBF kernel
   function updateGP() {
     isLoading = true;
+    let groundTruth = [];
+    let predicted = [];
+
     if (samples.length === 0) {
       isLoading = false;
       return;
@@ -146,12 +191,17 @@
             const K_inv_y = math.lusolve(K, y);
             const mean = math.multiply(k_star, K_inv_y).get([0, 0]);
             gpPredictions.push({ angle: gridB, velocity: gridVelocity, predicted: mean });
+
+            predicted.push(mean);
+            groundTruth.push(calculateEnergy(gridB, gridVelocity));
+
           } catch (e) {
             console.error("Error in GP calculation:", e);
           }
         }
       }
       drawContourPlot();
+      score = calculateR2(groundTruth, predicted);
       isLoading = false;
     }, 50);
   }
@@ -494,6 +544,37 @@
 
 <main>
   <h1>Asteroid Explorer</h1>
+
+  <!-- Live Bar -->
+  <div class="live-bar-container">
+    <div class="lives-label">Lives {lives}/20</div>
+    <div class="live-bar">
+      <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
+      <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">❤️</span>
+    </div>
+  </div>
+
+  <!-- Score Bar -->
+  <div class="score-bar-container">
+    <div class="score-label">Score: <span id="score-percentage">{(score * 100).toFixed(0)}%</span></div>
+    <div class="score-bar">
+      <div class="score-value" id="score-bar" style="width: {score * 100}%"></div>
+      <span class="star" id="score-star" style="left: {score * 100}%">⭐</span>
+    </div>
+  </div>
+
+  <!-- Game Ended Popup -->
+  {#if gameEnded}
+    <div class="game-ended-popup">
+      <div class="popup-content">
+        <h2>Game Ended</h2>
+        <p>You've used all your lives!</p>
+        <p>Final score: {(score * 100).toFixed(0)}%</p>
+        <button on:click={resetGame}>Play Again</button>
+      </div>
+    </div>
+  {/if}
+
   <div class="container">
     <div class="panel">
       <h2>Asteroid Visualization</h2>
@@ -536,6 +617,131 @@
 </main>
 
 <style>
+  /* Live Bar Container */
+  .live-bar-container {
+    margin: 20px 0;
+  }
+
+  /* Lives Label */
+  .lives-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+  /* Live Bar Styles */
+  .live-bar {
+    position: relative;
+    height: 30px;
+    background: #eee;
+    border-radius: 15px;
+    overflow: visible;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .lives-remaining {
+    height: 100%;
+    background: #ff4444;
+    transition: width 0.3s ease;
+    border-radius: 15px 0 0 15px;
+  }
+
+  .heart {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    transition: left 0.3s ease;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+  }
+
+  /* Score Container */
+  .score-bar-container {
+    margin: 20px 0;
+  }
+
+  /* Score Label */
+  .score-label {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+
+  /* Score Bar */
+  .score-bar {
+    position: relative;
+    height: 30px;
+    background: #eee;
+    border-radius: 15px;
+    overflow: visible;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Score Value */
+  .score-value {
+    height: 100%;
+    background: #FFD700;
+    transition: width 0.3s ease-in-out;
+    border-radius: 15px 0 0 15px;
+  }
+
+  /* Star Indicator */
+  .star {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: #FFD700;
+    transition: left 0.3s ease-in-out;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+    /* Game Ended Popup Styles */
+    .game-ended-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .popup-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .popup-content h2 {
+    color: #e55039;
+    margin-bottom: 20px;
+  }
+
+  .popup-content button {
+    background: #3c6382;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .popup-content button:hover {
+    background: #2d4d62;
+  }
+
+
   :root {
     --primary: #3c6382;
     --secondary: #82ccdd;

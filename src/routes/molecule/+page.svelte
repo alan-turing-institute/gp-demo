@@ -124,6 +124,7 @@
     gpPredictions = [];
     drawContourPlot();
     lives=20;
+    score=0;
   }
   
   // Add sample by clicking on contour plot
@@ -169,7 +170,6 @@
     }
   }
   
-  // Reset the game
   function resetGame() {
     lives = 20;
     score = 0;
@@ -178,7 +178,6 @@
     gameEnded = false;
     drawContourPlot();
   }
-  
   $: score = 0.0;
   function calculateR2(actual, predicted) {
     if (actual.length !== predicted.length || actual.length === 0) {
