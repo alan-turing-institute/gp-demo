@@ -639,13 +639,13 @@ function handleChange(event) {
       <div class="Other">
         <div class="control-panel">
           <div class="slider-container">
-            <label for="angle">ψ Angle (degrees):</label>
+            <label for="angle">Ψ Angle (degrees):</label>
             <input type="range" id="angle" bind:value={psi} min="0" max="360" step="1" />
             <span>{psi}°</span>
           </div>
           
           <div class="slider-container">
-            <label for="phiAngle">φ Angle (degrees):</label>
+            <label for="phiAngle">Φ Angle (degrees):</label>
             <input type="range" id="phiAngle" bind:value={phi} min="0" max="360" step="1" />
             <span>{phi}°</span>
           </div>
@@ -686,7 +686,7 @@ function handleChange(event) {
         <div class="energy-function">
           <h3>About the Visualization:</h3>
           <!-- <p>{showEnergyFunction ? 'Showing true function' : 'Showing emulator prediction'}</p> -->
-          <p>The energy function represents different stable conformations of the protein backbone. Lighter regions indicate lower energy (more stable conformations).</p>
+          <p>The energy function represents different stable conformations of the protein backbone. Lighter regions indicate more stable conformations (lower energy).</p>
         </div>
       </div>
     </div>
