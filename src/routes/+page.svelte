@@ -55,12 +55,12 @@
       <div class="hero">
         <h2>Accelerating large-scale simulations with AI</h2>
 
-        <p>Click on each image to learn more about the project.</p>
+        <p>How it works</p>
         <div class="feature-images">
           {#each [
-            { src: 'https://t4.ftcdn.net/jpg/02/66/38/15/360_F_266381525_alVrbw15u5EjhIpoqqa1eI5ghSf7hpz7.jpg', alt: 'Real world', title: 'Reality', text: 'To understand complex real-world systems, researchers and engineers often construct computer simulations.' },
-            { src: 'https://users.flatironinstitute.org/~polymathic/data/the_well/datasets/planetswe/gif/planetswe.gif', alt: 'Simulation', title: 'Simulator', text: 'Simulations are computationally expensive and can take hours, days or even weeks to run.' },
-            { src: '/GP.png', alt: 'Emulator', title: 'Emulator', text: 'Emulators are fast, accurate models trained to replace simulations in real world applications.' }
+            { src: 'https://t4.ftcdn.net/jpg/02/66/38/15/360_F_266381525_alVrbw15u5EjhIpoqqa1eI5ghSf7hpz7.jpg', alt: 'Reality', title: 'Reality', text: 'To understand complex real-world systems, researchers and engineers often construct computer simulations.' },
+            { src: 'https://users.flatironinstitute.org/~polymathic/data/the_well/datasets/planetswe/gif/planetswe.gif', alt: 'Simulator', title: 'Simulator', text: 'Simulations are computationally expensive and can take hours, days or even weeks to run.' },
+            { src: 'https://www.cs.toronto.edu/~duvenaud/cookbook/symmetry/symmetry_2d.png', alt: 'Emulator', title: 'Emulator', text: 'Emulators are fast, accurate models trained to replace simulations in real world applications.' }
           ] as feature, i}
             <div class="feature-image-container" on:click={() => toggleFeature(i)}>
               <h3 class="feature-title">{feature.title}</h3>
@@ -74,6 +74,7 @@
             </div>
           {/each}
         </div>
+
 
     </div>
 
