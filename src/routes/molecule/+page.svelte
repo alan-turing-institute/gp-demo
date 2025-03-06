@@ -628,7 +628,13 @@ function handleChange(event) {
   <div class="container">
     <div class="panel">
       <h2>Backbone Angles</h2>
-      <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
+      <!-- THIS WAS THE ORIGINAL MOLECULE VISUALISATION -->
+      <!-- <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas> -->
+
+     <!-- Replaced canvas with Pdbmol while maintaining control panel width -->
+     <div class="molecule-visualization" style="width: {WIDTH}px; height: {HEIGHT}px;">
+      <Pdbmol bind:angle={phi} bind:phiAngle={psi}></Pdbmol>
+    </div>
       
       <div class="Other">
         <div class="control-panel">
@@ -644,7 +650,8 @@ function handleChange(event) {
             <span>{phi}°</span>
           </div>
         </div>
-        <Pdbmol bind:angle={phi} bind:phiAngle={psi}></Pdbmol>
+        <!-- ORIGINALLY HAD PDBMOL HERE -->
+        <!-- <Pdbmol bind:angle={phi} bind:phiAngle={psi}></Pdbmol> -->
       </div>
     </div>
     
@@ -1089,4 +1096,16 @@ function handleChange(event) {
 		text-align: right;
 		font-weight: bold;
 	}
+
+  .molecule-visualization {
+    background-color: white;
+    border: 2px solid #3c6382;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
 </style>
