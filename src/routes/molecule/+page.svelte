@@ -664,22 +664,21 @@ function handleChange(event) {
         <p>Samples: {samples.length}</p>
         <p>Current energy: {calculateEnergy(phi, psi).toFixed(2)}</p>
         <div class="instruction">
-          <p class="highlight">Click on the plot above to add sample points and update the GP model</p>
+          <p class="highlight">Click directly on the plot above to add sample points and update the emulator model</p>
         </div>
         <div class="button-group">
           {#if samples.length > 0}
             <button on:click={clearSamples}>Clear Samples</button>
           {/if}
           <button on:click={toggleEnergyFunction} class="info-button">
-            {showEnergyFunction ? 'Show GP Prediction' : 'Show Energy Function'}
+            {showEnergyFunction ? 'Show Prediction' : 'Show Function'}
           </button>
         </div>
         
         <div class="energy-function">
           <h3>About the Visualization:</h3>
-          <p>{showEnergyFunction ? 'Showing actual energy function' : 'Showing Gaussian Process prediction'}</p>
+          <p>{showEnergyFunction ? 'Showing true function' : 'Showing emulator prediction'}</p>
           <p>The energy function represents different stable conformations of the protein backbone. Lighter regions indicate lower energy (more stable conformations).</p>
-          <p>Click directly on the plot to add sample points and build a GP model that learns this energy landscape.</p>
         </div>
       </div>
     </div>
