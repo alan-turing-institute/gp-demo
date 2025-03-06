@@ -123,6 +123,8 @@
     samples = [];
     gpPredictions = [];
     drawContourPlot();
+    lives=20;
+    score=0;
   }
   
   // Add sample by clicking on contour plot
@@ -168,7 +170,6 @@
     }
   }
   
-  // Reset the game
   function resetGame() {
     lives = 20;
     score = 0;
@@ -177,7 +178,6 @@
     gameEnded = false;
     drawContourPlot();
   }
-  
   $: score = 0.0;
   function calculateR2(actual, predicted) {
     if (actual.length !== predicted.length || actual.length === 0) {
@@ -584,7 +584,7 @@ function handleChange(event) {
 </script>
 
 <main>
-  <h1>Protein Backbone Conformation Explorer</h1>
+  <h1>Protein Explorer</h1>
   
   <!-- Live Bar -->
   <div class="live-bar-container">
@@ -628,23 +628,30 @@ function handleChange(event) {
   <div class="container">
     <div class="panel">
       <h2>Backbone Angles</h2>
-      <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
+      <!-- THIS WAS THE ORIGINAL MOLECULE VISUALISATION -->
+      <!-- <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas> -->
+
+     <!-- Replaced canvas with Pdbmol while maintaining control panel width -->
+     <div class="molecule-visualization" style="width: {WIDTH}px; height: {HEIGHT}px;">
+      <Pdbmol bind:angle={phi} bind:phiAngle={psi}></Pdbmol>
+    </div>
       
       <div class="Other">
         <div class="control-panel">
           <div class="slider-container">
-            <label for="angle">Psi Angle (degrees):</label>
+            <label for="angle">Ψ Angle (degrees):</label>
             <input type="range" id="angle" bind:value={psi} min="0" max="360" step="1" />
             <span>{psi}°</span>
           </div>
           
           <div class="slider-container">
-            <label for="phiAngle">Phi Angle (degrees):</label>
+            <label for="phiAngle">Φ Angle (degrees):</label>
             <input type="range" id="phiAngle" bind:value={phi} min="0" max="360" step="1" />
             <span>{phi}°</span>
           </div>
         </div>
-        <Pdbmol bind:angle={phi} bind:phiAngle={psi}></Pdbmol>
+        <!-- ORIGINALLY HAD PDBMOL HERE -->
+        <!-- <Pdbmol bind:angle={phi} bind:phiAngle={psi}></Pdbmol> -->
       </div>
     </div>
     
@@ -664,22 +671,22 @@ function handleChange(event) {
         <p>Samples: {samples.length}</p>
         <p>Current energy: {calculateEnergy(phi, psi).toFixed(2)}</p>
         <div class="instruction">
-          <p class="highlight">Click on the plot above to add sample points and update the GP model</p>
+          <p class="highlight">Your goal is to train an accurate emulator using as few simulator runs as possible.</p>
+          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
         </div>
         <div class="button-group">
           {#if samples.length > 0}
             <button on:click={clearSamples}>Clear Samples</button>
           {/if}
           <button on:click={toggleEnergyFunction} class="info-button">
-            {showEnergyFunction ? 'Show GP Prediction' : 'Show Energy Function'}
+            {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
           </button>
         </div>
         
         <div class="energy-function">
           <h3>About the Visualization:</h3>
-          <p>{showEnergyFunction ? 'Showing actual energy function' : 'Showing Gaussian Process prediction'}</p>
-          <p>The energy function represents different stable conformations of the protein backbone. Lighter regions indicate lower energy (more stable conformations).</p>
-          <p>Click directly on the plot to add sample points and build a GP model that learns this energy landscape.</p>
+          <!-- <p>{showEnergyFunction ? 'Showing true function' : 'Showing emulator prediction'}</p> -->
+          <p>The energy function represents different stable conformations of the protein backbone. Lighter regions indicate more stable conformations (lower energy).</p>
         </div>
       </div>
     </div>
@@ -1089,4 +1096,16 @@ function handleChange(event) {
 		text-align: right;
 		font-weight: bold;
 	}
+
+  .molecule-visualization {
+    background-color: white;
+    border: 2px solid #3c6382;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
 </style>
