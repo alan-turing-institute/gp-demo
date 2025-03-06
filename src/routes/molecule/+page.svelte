@@ -584,7 +584,7 @@ function handleChange(event) {
 </script>
 
 <main>
-  <h1>Protein Backbone Conformation Explorer</h1>
+  <h1>Protein Explorer</h1>
   
   <!-- Live Bar -->
   <div class="live-bar-container">
@@ -664,20 +664,21 @@ function handleChange(event) {
         <p>Samples: {samples.length}</p>
         <p>Current energy: {calculateEnergy(phi, psi).toFixed(2)}</p>
         <div class="instruction">
-          <p class="highlight">Click directly on the plot above to add sample points and update the emulator model</p>
+          <p class="highlight">Your goal is to train an accurate emulator using as few simulator runs as possible.</p>
+          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
         </div>
         <div class="button-group">
           {#if samples.length > 0}
             <button on:click={clearSamples}>Clear Samples</button>
           {/if}
           <button on:click={toggleEnergyFunction} class="info-button">
-            {showEnergyFunction ? 'Show Prediction' : 'Show Function'}
+            {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
           </button>
         </div>
         
         <div class="energy-function">
           <h3>About the Visualization:</h3>
-          <p>{showEnergyFunction ? 'Showing true function' : 'Showing emulator prediction'}</p>
+          <!-- <p>{showEnergyFunction ? 'Showing true function' : 'Showing emulator prediction'}</p> -->
           <p>The energy function represents different stable conformations of the protein backbone. Lighter regions indicate lower energy (more stable conformations).</p>
         </div>
       </div>

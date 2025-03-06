@@ -493,10 +493,10 @@
 </script>
 
 <main>
-  <h1>Astroid with Velocity Vector Explorer</h1>
+  <h1>Asteroid Explorer</h1>
   <div class="container">
     <div class="panel">
-      <h2>Astroid Visualization</h2>
+      <h2>Asteroid Visualization</h2>
       <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
     </div>
     <div class="panel">
@@ -514,20 +514,21 @@
         <p>Samples: {samples.length}</p>
         <p>Current energy: {calculateEnergy(angle, velocity).toFixed(2)}</p>
         <div class="instruction">
-          <p class="highlight">Click directly on the plot above to add sample points and update the emulator model.</p>
+          <p class="highlight">Your goal is to train an accurate emulator using as few simulator runs as possible.</p>
+          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
         </div>
         <div class="button-group">
           {#if samples.length > 0}
             <button on:click={clearSamples}>Clear Samples</button>
           {/if}
           <button on:click={toggleEnergyFunction} class="info-button">
-            {showEnergyFunction ? 'Show Prediction' : 'Show Function'}
+            {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
           </button>
         </div>
         <div class="energy-function">
           <h3>About the Visualization:</h3>
-          <p>{showEnergyFunction ? 'Showing true function' : 'Showing emulator prediction'}</p>
-          <p>The flyby distance isthe closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
+          <!-- <p>{showEnergyFunction ? 'Showing true function' : 'Showing emulator prediction'}</p> -->
+          <p>The flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
         </div>
       </div>
     </div>
