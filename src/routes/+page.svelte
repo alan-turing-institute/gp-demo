@@ -55,7 +55,7 @@
       <div class="hero">
         <h2>Accelerating large-scale simulations with AI</h2>
 
-        <p>How it works</p>
+        <p>Click on the images to learn more about how it works.</p>
         <div class="feature-images">
           {#each [
             { src: 'https://t4.ftcdn.net/jpg/02/66/38/15/360_F_266381525_alVrbw15u5EjhIpoqqa1eI5ghSf7hpz7.jpg', alt: 'Reality', title: 'Reality', text: 'To understand complex real-world systems, researchers and engineers often construct computer simulations.' },
@@ -74,6 +74,7 @@
             </div>
           {/each}
         </div>
+
 
 
     </div>
@@ -103,8 +104,28 @@
       </div>
       
       <div class="hero">
-        <h2>Software</h2>          
-        <div class="cards">
+        <h2>Project goals</h2>          
+        <p>Click on the images to discover what we're working on.</p>
+        <div class="feature-images">
+          {#each [
+            { src: '', alt: 'Advanced emulators', title: 'Advanced emulators', text: 'Sparse GPs... model ensembles... handling spatio-temporal data' },
+            { src: '', alt: 'Simulator in the loop', title: 'Simulator in the loop', text: 'Active learning.... Uncertainty quantification....' },
+            { src: 'https://raw.githubusercontent.com/alan-turing-institute/autoemulate/refs/heads/main/misc/AE_logo_final.png', alt: 'Tools', title: 'Tools', text: 'We are developing a cross-domain toolkit to automatically build AI-powered emulators for accelerating complex simulations.' }
+          ] as feature, i}
+            <div class="feature-image-container" on:click={() => toggleFeature(i)}>
+              <h3 class="feature-title">{feature.title}</h3>
+              <div class="feature-content">
+                {#if $toggled[i]}
+                  <p class="feature-text">{feature.text}</p>
+                {:else}
+                  <img src={feature.src} alt={feature.alt} class="feature-image" />
+                {/if}
+              </div>
+            </div>
+          {/each}
+        </div>
+
+        <!-- <div class="cards">
           <div class="card card-horizontal">
             <div class="card-img-side autoemulate-img-container">
               <img src="https://raw.githubusercontent.com/alan-turing-institute/autoemulate/refs/heads/main/misc/AE_logo_final.png" alt="AutoEmulate Logo" class="autoemulate-logo">
@@ -116,7 +137,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       
 
   </div>
