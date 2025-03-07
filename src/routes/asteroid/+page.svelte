@@ -547,12 +547,7 @@
 </script>
 
 <main>
-  <div class="header-container">
     <h1>Asteroid Explorer</h1>
-    <button class="home-button" on:click={goToHomePage}>
-      <span>Home</span>
-    </button>
-  </div>
 
   <!-- Live Bar -->
   <div class="live-bar-container">
@@ -588,6 +583,16 @@
     <div class="panel">
       <h2>Asteroid Visualization</h2>
       <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
+      <div class="info">
+      <div class="instruction">
+        <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
+        <div class="button-group">
+            <button class="info-button" on:click={goToHomePage}>
+              <span>Go back</span>
+            </button>
+        </div>
+      </div>
+    </div>
     </div>
     <div class="panel">
       <h2>Flyby distance past Earth</h2>
@@ -601,10 +606,8 @@
         ></canvas>
       </div>
       <div class="info">
-        <p>Samples: {samples.length}</p>
-        <p>Current flyby distance: {calculateEnergy(angle, velocity).toFixed(2)}</p>
         <div class="instruction">
-          <p class="highlight">Your goal is to train an accurate emulator using as few simulator runs as possible.</p>
+          <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
           <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
         </div>
         <div class="button-group">
@@ -615,54 +618,12 @@
             {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
           </button>
         </div>
-        <div class="energy-function">
-          <h3>About the Visualization:</h3>
-          <!-- <p>{showEnergyFunction ? 'Showing true function' : 'Showing emulator prediction'}</p> -->
-          <p>The flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
-        </div>
       </div>
     </div>
   </div>
 </main>
 
 <style>
-  .header-container {
-    position: relative;
-    margin-bottom: 20px;
-    padding-top: 10px;
-  }
-  /* Home Button Styles */
-  .home-button {
-    position: absolute;
-    top: 0;
-    right: 0;
-    background: linear-gradient(to right, #3c6382, #60a3bc);
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 14px;
-    font-family: 'Helvetica Neue', sans-serif;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 0;
-  }
-  .home-button:hover {
-    background: linear-gradient(to right, #2d4d62, #4a8094);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-1px);
-  }
-  
-  .home-button:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  }
 
   /* Live Bar Container */
   .live-bar-container {
