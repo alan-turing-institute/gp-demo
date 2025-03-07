@@ -55,7 +55,7 @@
       <div class="hero">
         <h2>Accelerating large-scale simulations with AI</h2>
 
-        <p>Click on each image to learn more about the project.</p>
+        <p>Click on each image to learn about the typical workflow.</p>
         <div class="feature-images">
           {#each [
             { src: 'https://t4.ftcdn.net/jpg/02/66/38/15/360_F_266381525_alVrbw15u5EjhIpoqqa1eI5ghSf7hpz7.jpg', alt: 'Real world', title: 'Reality', text: 'To understand complex real-world systems, researchers and engineers often construct computer simulations.' },
