@@ -102,10 +102,9 @@
         <div class="cards">
           <div class="card card-horizontal">
             <div class="card-img-side autoemulate-img-container">
-              <img src="https://raw.githubusercontent.com/alan-turing-institute/autoemulate/refs/heads/main/misc/AE_logo_final.png" alt="AutoEmulate Logo" class="autoemulate-logo">
+              <img src="https://github.com/alan-turing-institute/gp-demo/blob/main/static/logogaussian.png" alt="AutoEmulate Logo" class="autoemulate-logo">
             </div>
             <div class="card-content">
-              <h3>AutoEmulate</h3>
               <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators for accelerating complex simulations.</p>
               <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">Website</a>
             </div>
