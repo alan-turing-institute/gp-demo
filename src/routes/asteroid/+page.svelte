@@ -583,17 +583,11 @@
     <div class="panel">
       <h2>Asteroid Visualization</h2>
       <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
-      <div class="info">
-      <div class="instruction">
-        <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
-        <div class="button-group">
-            <button class="info-button" on:click={goToHomePage}>
-              <span>Go back</span>
-            </button>
+        <div class="instruction">
+          <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
         </div>
-      </div>
     </div>
-    </div>
+
     <div class="panel">
       <h2>Flyby distance past Earth</h2>
       <div class="contour-container">
@@ -605,10 +599,8 @@
           class={isLoading ? 'loading' : ''}
         ></canvas>
       </div>
-      <div class="info">
         <div class="instruction">
           <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
-          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
         </div>
         <div class="button-group">
           {#if samples.length > 0}
@@ -618,6 +610,13 @@
             {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
           </button>
         </div>
+        <div class="instruction">
+          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+        </div>
+        <div class="button-group">
+          <button class="info-button" on:click={goToHomePage}>
+            <span>Go back</span>
+          </button>
       </div>
     </div>
   </div>

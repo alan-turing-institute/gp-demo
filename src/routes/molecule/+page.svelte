@@ -660,15 +660,8 @@ function handleChange(event) {
       </div>
     
 
-    <div class="info">
       <div class="instruction">
         <p>Rotating backbone angles changes the protein's shape, affecting its stability. Lower energy regions correspond to more stable conformations.</p>
-        <div class="button-group">
-            <button class="info-button" on:click={goToHomePage}>
-              <span>Go back</span>
-            </button>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -684,10 +677,8 @@ function handleChange(event) {
         ></canvas>
       </div>
       
-      <div class="info">
         <div class="instruction">
           <p class="highlight">Your goal is to train an emulator that accurately predicts the energy function using as few protein simulator runs as possible.</p>
-          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
         </div>
         <div class="button-group">
           {#if samples.length > 0}
@@ -697,7 +688,13 @@ function handleChange(event) {
             {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
           </button>
         </div>
-        
+        <div class="instruction">
+          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+        </div>
+        <div class="button-group">
+          <button class="info-button" on:click={goToHomePage}>
+            <span>Go back</span>
+          </button>
       </div>
     </div>
   </div>
