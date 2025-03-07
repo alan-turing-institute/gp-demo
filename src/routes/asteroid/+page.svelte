@@ -3,6 +3,10 @@
   import * as d3 from 'd3';
   import * as math from 'mathjs';
 
+  function goToHomePage() {
+    window.location.href = '/'; // Adjust this URL if your home page is at a different path
+  }
+
   // Color palette - elegant muted colors
   const COLORS = {
     primary: "#3c6382",       // Deep blue
@@ -543,7 +547,12 @@
 </script>
 
 <main>
-  <h1>Asteroid Explorer</h1>
+  <div class="header-container">
+    <h1>Asteroid Explorer</h1>
+    <button class="home-button" on:click={goToHomePage}>
+      <span>Home</span>
+    </button>
+  </div>
 
   <!-- Live Bar -->
   <div class="live-bar-container">
@@ -617,6 +626,44 @@
 </main>
 
 <style>
+  .header-container {
+    position: relative;
+    margin-bottom: 20px;
+    padding-top: 10px;
+  }
+  /* Home Button Styles */
+  .home-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: linear-gradient(to right, #3c6382, #60a3bc);
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 0;
+  }
+  .home-button:hover {
+    background: linear-gradient(to right, #2d4d62, #4a8094);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+  
+  .home-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
   /* Live Bar Container */
   .live-bar-container {
     margin: 20px 0;
