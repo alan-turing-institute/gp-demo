@@ -98,11 +98,11 @@
       </div>
       
       <div class="hero">
-        <h2>Software</h2>          
+        <h2>AutoEmulate</h2>          
         <div class="cards">
           <div class="card card-horizontal">
             <div class="card-img-side autoemulate-img-container">
-              <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/logogaussian.png" alt="AutoEmulate Logo" class="autoemulate-logo">
+              <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/logogaussian-2.png" alt="AutoEmulate Logo" class="autoemulate-logo">
             </div>
             <div class="card-content">
               <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators for accelerating complex simulations.</p>
