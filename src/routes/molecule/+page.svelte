@@ -756,12 +756,6 @@ function handleChange(event) {
         <div class="instruction">
           <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
         </div>
-        
-        <div class="button-group">
-          <button class="info-button" on:click={goToHomePage}>
-            <span>Go back</span>
-          </button>
-        </div>
       </div>
     {:else}
       <!-- For vertical screens, use the 2x2 grid layout -->
@@ -779,29 +773,26 @@ function handleChange(event) {
         </div>
       </div>
       
-<!-- A_12: Buttons (Show Energy Button and Clear Samples) -->
-<div class="grid-item buttons">
-  <!-- Move the instructional text here -->
-  <div class="instruction">
-    <p class="highlight">Your goal is to train an emulator that accurately predicts the energy function using as few protein simulator runs as possible.</p>
-  </div>
-  <div class="instruction">
-    <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
-  </div>
+      <!-- A_12: Buttons (Show Energy Button and Clear Samples) -->
+      <div class="grid-item buttons">
+        <!-- Move the instructional text here -->
+        <div class="instruction">
+          <p class="highlight">Your goal is to train an emulator that accurately predicts the energy function using as few protein simulator runs as possible.</p>
+        </div>
+        <div class="instruction">
+          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+        </div>
 
-  <!-- Buttons -->
-  <div class="vertical-button-group">
-    {#if samples.length > 0}
-      <button on:click={clearSamples}>Clear Samples</button>
-    {/if}
-    <button on:click={toggleEnergyFunction} class="info-button">
-      {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
-    </button>
-    <button class="info-button" on:click={goToHomePage}>
-      <span>Go back</span>
-    </button>
-  </div>
-</div>
+        <!-- Buttons -->
+        <div class="vertical-button-group">
+          {#if samples.length > 0}
+            <button on:click={clearSamples}>Clear Samples</button>
+          {/if}
+          <button on:click={toggleEnergyFunction} class="info-button">
+            {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
+          </button>
+        </div>
+      </div>
       
       <!-- A_21: Molecule Panel -->
       <div class="grid-item molecule-panel">
@@ -830,6 +821,13 @@ function handleChange(event) {
         </div>
       </div>
     {/if}
+  </div>
+
+  <!-- Go back button moved here -->
+  <div class="button-group" style="margin-top: 20px; text-align: center;">
+    <button class="info-button" on:click={goToHomePage}>
+      <span>Go back</span>
+    </button>
   </div>
 </main>
 
