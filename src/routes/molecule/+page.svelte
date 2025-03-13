@@ -661,7 +661,7 @@ function handleChange(event) {
   <div class="bars-container">
       <!-- Live Bar -->
       <div class="live-bar-container">
-          <div class="lives-label">Lives {lives}/20</div>
+          <div class="lives-label">Guesses remaining {lives}/20</div>
           <div class="live-bar">
               <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
               <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">❤️</span>
