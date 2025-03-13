@@ -624,7 +624,7 @@
             <span class="star" id="score-star" style="left: {score * 100}%">⭐</span>
         </div>
     </div>
-    </div>
+  </div>
 
   <!-- Game Ended Popup -->
   {#if gameEnded}
@@ -638,30 +638,76 @@
     </div>
   {/if}
 
-  <div class="container">
-    <div class="panel">
-      <h2>Asteroid Visualization</h2>
-      <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
-        <div class="instruction">
-          <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
-        </div>
-    </div>
 
-    <div class="panel">
-      <h2>Flyby distance past Earth</h2>
-      <div class="contour-container">
-        <canvas 
-          bind:this={contourCanvas} 
-          width={WIDTH + 60} 
-          height={HEIGHT}
-          on:click={handleContourClick}
-          class={isLoading ? 'loading' : ''}
-        ></canvas>
+    <!-- Responsive Grid Layout -->
+    <div class="responsive-grid {isVertical ? 'vertical' : 'horizontal'}">
+      <!-- For horizontal screens, maintain original layout -->
+      {#if !isVertical}
+      <div class="panel">
+        <h2>Asteroid Visualization</h2>
+        <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
+          <div class="instruction">
+            <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
+          </div>
       </div>
+
+      <div class="panel">
+        <h2>Flyby distance past Earth</h2>
+        <div class="contour-container">
+          <canvas 
+            bind:this={contourCanvas} 
+            width={WIDTH + 60} 
+            height={HEIGHT}
+            on:click={handleContourClick}
+            class={isLoading ? 'loading' : ''}
+          ></canvas>
+        </div>
+
+          <div class="instruction">
+            <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
+          </div>
+
+          <div class="button-group">
+            {#if samples.length > 0}
+              <button on:click={clearSamples}>Clear Samples</button>
+            {/if}
+            <button on:click={toggleEnergyFunction} class="info-button">
+              {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
+            </button>
+          </div>
+
+          <div class="instruction">
+            <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+          </div>
+        </div>
+      {:else}
+        <!-- For vertical screens, use the 2x2 grid layout -->
+          <!-- A_11: Energy Plot -->
+          <div class="grid-item energy-plot">
+            <h2>Flyby distance past Earth</h2>
+            <div class="contour-container">
+              <canvas 
+                bind:this={contourCanvas} 
+                width={WIDTH + 60} 
+                height={HEIGHT} 
+                on:click={handleContourClick}
+                class={isLoading ? 'loading' : ''}
+              ></canvas>
+            </div>
+          </div>
+
+      <!-- A_12: Buttons (Show Energy Button and Clear Samples) -->
+      <div class="grid-item buttons">
+        <!-- Move the instructional text here -->
         <div class="instruction">
           <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
         </div>
-        <div class="button-group">
+        <div class="instruction">
+          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="vertical-button-group">
           {#if samples.length > 0}
             <button on:click={clearSamples}>Clear Samples</button>
           {/if}
@@ -669,21 +715,182 @@
             {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
           </button>
         </div>
-        <div class="instruction">
-          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+      </div>
+
+      <!-- A_21: Asteroid Panel -->
+      <div class="grid-item molecule-panel">
+        <h2>Asteroid Visualization</h2>
+        <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
+      </div>
+
+      <!-- A_22: Asteroid instructions -->
+      <div class="grid-item angle-sliders">
+        <div class="vertical-control-panel">
+          <div class="compact-slider-container">
+          <div class="instruction">
+            <p>Rotating backbone angles changes the protein's shape, affecting its stability. Lower energy regions correspond to more stable conformations.</p>
+          </div>
         </div>
+      </div>
     </div>
+
+      {/if}
   </div>
+
     <!-- Go back button moved here -->
     <div class="button-group" style="margin-top: 20px; text-align: center;">
       <button class="info-button" on:click={goToHomePage}>
         <span>Go back</span>
       </button>
     </div>
+
 </main>
 
 <style>
-
+/* Responsive Grid Layout */
+.responsive-grid {
+    display: grid;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Horizontal layout (default) */
+  .responsive-grid.horizontal {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  /* Vertical layout - 2x2 grid */
+  .responsive-grid.vertical {
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas: 
+      "energy-plot buttons"
+      "molecule-panel angle-sliders";
+  }
+  
+  /* Grid items */
+  .grid-item {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e8e8e8;
+  }
+  
+  /* Specific grid item styles for vertical layout */
+  .responsive-grid.vertical .energy-plot {
+    grid-area: energy-plot;
+  }
+  
+  .responsive-grid.vertical .buttons {
+    grid-area: buttons;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .responsive-grid.vertical .molecule-panel {
+    grid-area: molecule-panel;
+  }
+  
+  .responsive-grid.vertical .angle-sliders {
+    grid-area: angle-sliders;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* Vertical orientation styles */
+  .vertical-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    justify-content: center;
+  }
+  
+  .vertical-button-group button {
+    width: 100%;
+    margin: 0;
+  }
+  
+  .vertical-control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+    justify-content: center;
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .compact-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .compact-slider-container label {
+    font-weight: bold;
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+  
+  .compact-slider-container input {
+    width: 100%;
+    max-width: 120px;
+  }
+  
+  .compact-slider-container span {
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Responsive adjustments for small screens */
+  @media (max-width: 768px) {
+    .responsive-grid.vertical {
+      grid-template-columns: 1fr;
+      grid-template-areas: 
+        "energy-plot"
+        "buttons"
+        "molecule-panel"
+        "angle-sliders";
+    }
+    
+    .compact-slider-container input {
+      max-width: 100%;
+    }
+  }
+  
+  /* Maintain proper sizing for visualizations */
+  .responsive-grid.vertical .molecule-visualization {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .responsive-grid.vertical .contour-container canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Maintain aspect ratio for visualizations */
+  .molecule-visualization {
+    max-width: 100%;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+  }
+  
+  .contour-container canvas {
+    max-width: 100%;
+    height: auto !important;
+  }
+  
   /* Bars Container */
   .bars-container {
       display: flex;
