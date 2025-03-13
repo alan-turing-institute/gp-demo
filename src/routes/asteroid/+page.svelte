@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import * as d3 from 'd3';
   import * as math from 'mathjs';
 
@@ -41,6 +41,57 @@
   // Constants for the flyby function
   const mu = 398600.4418; // km^3/s^2
   const R_e = 6371;       // km
+
+
+  // Save state to localStorage
+  function saveState() {
+    localStorage.setItem('asteroidExplorerState', JSON.stringify({
+      samples,
+      gpPredictions,
+      lives,
+      score,
+      gameEnded,
+      showEnergyFunction,
+      phi,
+      psi
+    }));
+  }
+    // Load state from localStorage
+    function loadState() {
+      const savedState = localStorage.getItem('asteroidExplorerState');
+      if (savedState) {
+        const state = JSON.parse(savedState);
+        samples = state.samples;
+        gpPredictions = state.gpPredictions;
+        lives = state.lives;
+        score = state.score;
+        gameEnded = state.gameEnded;
+        showEnergyFunction = state.showEnergyFunction;
+        phi = state.phi;
+        psi = state.psi;
+      }
+    }
+    // Add screen orientation detection
+    let isVertical = false;
+    
+    function checkOrientation() {
+      // Check if the screen is vertical (height > width)
+      isVertical = window.innerHeight > window.innerWidth;
+    }
+    onMount(() => {
+    loadState();
+    calculateEnergyRange();
+    drawAstroid();
+    drawContourPlot();
+    
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    
+    return () => {
+      saveState();
+      window.removeEventListener('resize', checkOrientation);
+    };
+  });
 
   // Flyby distance function (maps velocity and impact parameter to flyby distance)
   function flyby_distance(v, b, mu = 398600.4418, R_e = 6371) {
@@ -107,8 +158,13 @@
     if (isLoading || lives <= 0) return; // Prevent clicks when out of lives
 
     const rect = contourCanvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+
+    // Adjust click coordinates to account for canvas position
+    const scaleX = contourCanvas.width / rect.width; // Scale for canvas width
+    const scaleY = contourCanvas.height / rect.height; // Scale for canvas height
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
+
     if (x >= MARGIN && x <= WIDTH - MARGIN && y >= MARGIN && y <= HEIGHT - MARGIN) {
       const clickedB = xScale.invert(x);
       const clickedVelocity = yScale.invert(y);
@@ -549,23 +605,26 @@
 <main>
     <h1>Asteroid Explorer</h1>
 
-  <!-- Live Bar -->
-  <div class="live-bar-container">
-    <div class="lives-label">Guesses remaining {lives}/20</div>
-    <div class="live-bar">
-      <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
-      <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">❤️</span>
+  <!-- Container for Lives and Score Bars -->
+  <div class="bars-container">
+    <!-- Live Bar -->
+    <div class="live-bar-container">
+        <div class="lives-label">Guesses remaining {lives}/20</div>
+        <div class="live-bar">
+            <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
+            <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">❤️</span>
+        </div>
     </div>
-  </div>
 
-  <!-- Score Bar -->
-  <div class="score-bar-container">
-    <div class="score-label">Score: <span id="score-percentage">{(score * 100).toFixed(0)}%</span></div>
-    <div class="score-bar">
-      <div class="score-value" id="score-bar" style="width: {score * 100}%"></div>
-      <span class="star" id="score-star" style="left: {score * 100}%">⭐</span>
+    <!-- Score Bar -->
+    <div class="score-bar-container">
+        <div class="score-label">Score: <span id="score-percentage">{(score * 100).toFixed(0)}%</span></div>
+        <div class="score-bar">
+            <div class="score-value" id="score-bar" style="width: {score * 100}%"></div>
+            <span class="star" id="score-star" style="left: {score * 100}%">⭐</span>
+        </div>
     </div>
-  </div>
+    </div>
 
   <!-- Game Ended Popup -->
   {#if gameEnded}
@@ -613,98 +672,76 @@
         <div class="instruction">
           <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
         </div>
-        <div class="button-group">
-          <button class="info-button" on:click={goToHomePage}>
-            <span>Go back</span>
-          </button>
-      </div>
     </div>
   </div>
+    <!-- Go back button moved here -->
+    <div class="button-group" style="margin-top: 20px; text-align: center;">
+      <button class="info-button" on:click={goToHomePage}>
+        <span>Go back</span>
+      </button>
+    </div>
 </main>
 
 <style>
 
+  /* Bars Container */
+  .bars-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px; /* Adjust the gap between the bars as needed */
+      margin: 20px 0;
+  }
+
   /* Live Bar Container */
   .live-bar-container {
-    margin: 20px 0;
+      flex: 1; /* Allow the live bar to take up available space */
   }
 
-  /* Lives Label */
-  .lives-label {
-    font-size: 18px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 5px;
-    text-align: center;
+  /* Score Bar Container */
+  .score-bar-container {
+      flex: 1; /* Allow the score bar to take up available space */
   }
 
-  /* Live Bar Styles */
-  .live-bar {
-    position: relative;
-    height: 30px;
-    background: #eee;
-    border-radius: 15px;
-    overflow: visible;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  /* Existing styles for live-bar, score-bar, etc. */
+  .live-bar, .score-bar {
+      position: relative;
+      height: 30px;
+      background: #eee;
+      border-radius: 15px;
+      overflow: visible;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .lives-remaining, .score-value {
+      height: 100%;
+      transition: width 0.3s ease;
+      border-radius: 15px 0 0 15px;
   }
 
   .lives-remaining {
-    height: 100%;
-    background: #ff4444;
-    transition: width 0.3s ease;
-    border-radius: 15px 0 0 15px;
+      background: #ff4444;
+  }
+
+  .score-value {
+      background: #FFD700;
+  }
+
+  .heart, .star {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      transition: left 0.3s ease;
   }
 
   .heart {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px;
-    transition: left 0.3s ease;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+      color: #ff4444;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
   }
 
-  /* Score Container */
-  .score-bar-container {
-    margin: 20px 0;
-  }
-
-  /* Score Label */
-  .score-label {
-    font-size: 18px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 5px;
-    text-align: center;
-  }
-
-  /* Score Bar */
-  .score-bar {
-    position: relative;
-    height: 30px;
-    background: #eee;
-    border-radius: 15px;
-    overflow: visible;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Score Value */
-  .score-value {
-    height: 100%;
-    background: #FFD700;
-    transition: width 0.3s ease-in-out;
-    border-radius: 15px 0 0 15px;
-  }
-
-  /* Star Indicator */
   .star {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px;
-    color: #FFD700;
-    transition: left 0.3s ease-in-out;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      color: #FFD700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
     /* Game Ended Popup Styles */
