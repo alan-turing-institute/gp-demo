@@ -728,7 +728,7 @@
         <div class="vertical-control-panel">
           <div class="compact-slider-container">
           <div class="instruction">
-            <p>Rotating backbone angles changes the protein's shape, affecting its stability. Lower energy regions correspond to more stable conformations.</p>
+            <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
           </div>
         </div>
       </div>
