@@ -605,11 +605,15 @@
 <main>
     <h1>Asteroid Explorer</h1>
 
+    <div class="instruction">
+      <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
+    </div>
+
   <!-- Container for Lives and Score Bars -->
   <div class="bars-container">
     <!-- Live Bar -->
     <div class="live-bar-container">
-        <div class="lives-label">Guesses remaining {lives}/20</div>
+        <div class="lives-label">Guesses left {lives}/20</div>
         <div class="live-bar">
             <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
             <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">❤️</span>
@@ -663,10 +667,6 @@
           ></canvas>
         </div>
 
-          <div class="instruction">
-            <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
-          </div>
-
           <div class="button-group">
             {#if samples.length > 0}
               <button on:click={clearSamples}>Clear Samples</button>
@@ -700,10 +700,7 @@
       <div class="grid-item buttons">
         <!-- Move the instructional text here -->
         <div class="instruction">
-          <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
-        </div>
-        <div class="instruction">
-          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+          <p>Click directly on the plot to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
         </div>
 
         <!-- Buttons -->
