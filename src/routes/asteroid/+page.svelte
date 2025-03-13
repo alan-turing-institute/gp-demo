@@ -606,6 +606,10 @@
     <h1>Asteroid Explorer</h1>
 
     <div class="instruction">
+      <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
+    </div>
+
+    <div class="instruction">
       <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
     </div>
 
@@ -650,9 +654,6 @@
       <div class="panel">
         <h2>Asteroid Visualization</h2>
         <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
-          <div class="instruction">
-            <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
-          </div>
       </div>
 
       <div class="panel">
@@ -721,15 +722,13 @@
       </div>
 
       <!-- A_22: Asteroid instructions -->
-      <div class="grid-item angle-sliders">
+      <!-- <div class="grid-item angle-sliders">
         <div class="vertical-control-panel">
           <div class="compact-slider-container">
-          <div class="instruction">
-            <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
-          </div>
+
         </div>
-      </div>
-    </div>
+      </div> -->
+    <!-- </div> -->
 
       {/if}
   </div>

@@ -657,6 +657,11 @@ function handleChange(event) {
 <main>
   <h1>Protein Explorer</h1>
 
+
+  <div class="instruction">
+    <p>Rotating backbone angles changes the protein's shape, affecting its stability. Lower energy regions correspond to more stable conformations.</p>
+  </div>
+
   <div class="instruction">
     <p class="highlight">Your goal is to train an emulator that accurately predicts the energy function using as few protein simulator runs as possible.</p>
   </div>
@@ -725,10 +730,6 @@ function handleChange(event) {
             <input type="range" id="phiAngle" bind:value={phi} min="0" max="360" step="1" />
             <span>{phi}°</span>
           </div>
-        </div>
-
-        <div class="instruction">
-          <p>Rotating backbone angles changes the protein's shape, affecting its stability. Lower energy regions correspond to more stable conformations.</p>
         </div>
       </div>
 
@@ -803,9 +804,7 @@ function handleChange(event) {
       <div class="grid-item angle-sliders">
         <div class="vertical-control-panel">
           <div class="compact-slider-container">
-          <div class="instruction">
-            <p>Rotating backbone angles changes the protein's shape, affecting its stability. Lower energy regions correspond to more stable conformations.</p>
-          </div>
+
             <label for="angle-vertical">Ψ Angle:</label>
             <input type="range" id="angle-vertical" bind:value={psi} min="0" max="360" step="1" />
             <span>{psi}°</span>
