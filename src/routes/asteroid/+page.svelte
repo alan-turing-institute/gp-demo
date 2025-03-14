@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import * as d3 from 'd3';
   import * as math from 'mathjs';
 
@@ -41,6 +41,57 @@
   // Constants for the flyby function
   const mu = 398600.4418; // km^3/s^2
   const R_e = 6371;       // km
+
+
+  // Save state to localStorage
+  function saveState() {
+    localStorage.setItem('asteroidExplorerState', JSON.stringify({
+      samples,
+      gpPredictions,
+      lives,
+      score,
+      gameEnded,
+      showEnergyFunction,
+      phi,
+      psi
+    }));
+  }
+    // Load state from localStorage
+    function loadState() {
+      const savedState = localStorage.getItem('asteroidExplorerState');
+      if (savedState) {
+        const state = JSON.parse(savedState);
+        samples = state.samples;
+        gpPredictions = state.gpPredictions;
+        lives = state.lives;
+        score = state.score;
+        gameEnded = state.gameEnded;
+        showEnergyFunction = state.showEnergyFunction;
+        phi = state.phi;
+        psi = state.psi;
+      }
+    }
+    // Add screen orientation detection
+    let isVertical = false;
+    
+    function checkOrientation() {
+      // Check if the screen is vertical (height > width)
+      isVertical = window.innerHeight > window.innerWidth;
+    }
+    onMount(() => {
+    loadState();
+    calculateEnergyRange();
+    drawAstroid();
+    drawContourPlot();
+    
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    
+    return () => {
+      saveState();
+      window.removeEventListener('resize', checkOrientation);
+    };
+  });
 
   // Flyby distance function (maps velocity and impact parameter to flyby distance)
   function flyby_distance(v, b, mu = 398600.4418, R_e = 6371) {
@@ -107,8 +158,13 @@
     if (isLoading || lives <= 0) return; // Prevent clicks when out of lives
 
     const rect = contourCanvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+
+    // Adjust click coordinates to account for canvas position
+    const scaleX = contourCanvas.width / rect.width; // Scale for canvas width
+    const scaleY = contourCanvas.height / rect.height; // Scale for canvas height
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
+
     if (x >= MARGIN && x <= WIDTH - MARGIN && y >= MARGIN && y <= HEIGHT - MARGIN) {
       const clickedB = xScale.invert(x);
       const clickedVelocity = yScale.invert(y);
@@ -549,21 +605,32 @@
 <main>
     <h1>Asteroid Explorer</h1>
 
-  <!-- Live Bar -->
-  <div class="live-bar-container">
-    <div class="lives-label">Lives {lives}/20</div>
-    <div class="live-bar">
-      <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
-      <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">❤️</span>
+    <div class="instruction">
+      <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
     </div>
-  </div>
 
-  <!-- Score Bar -->
-  <div class="score-bar-container">
-    <div class="score-label">Score: <span id="score-percentage">{(score * 100).toFixed(0)}%</span></div>
-    <div class="score-bar">
-      <div class="score-value" id="score-bar" style="width: {score * 100}%"></div>
-      <span class="star" id="score-star" style="left: {score * 100}%">⭐</span>
+    <div class="instruction">
+      <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
+    </div>
+
+  <!-- Container for Lives and Score Bars -->
+  <div class="bars-container">
+    <!-- Live Bar -->
+    <div class="live-bar-container">
+        <div class="lives-label">Guesses left {lives}/20</div>
+        <div class="live-bar">
+            <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
+            <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">❤️</span>
+        </div>
+    </div>
+
+    <!-- Score Bar -->
+    <div class="score-bar-container">
+        <div class="score-label">Score: <span id="score-percentage">{(score * 100).toFixed(0)}%</span></div>
+        <div class="score-bar">
+            <div class="score-value" id="score-bar" style="width: {score * 100}%"></div>
+            <span class="star" id="score-star" style="left: {score * 100}%">⭐</span>
+        </div>
     </div>
   </div>
 
@@ -579,30 +646,66 @@
     </div>
   {/if}
 
-  <div class="container">
-    <div class="panel">
-      <h2>Asteroid Visualization</h2>
-      <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
-        <div class="instruction">
-          <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
-        </div>
-    </div>
 
-    <div class="panel">
-      <h2>Flyby distance past Earth</h2>
-      <div class="contour-container">
-        <canvas 
-          bind:this={contourCanvas} 
-          width={WIDTH + 60} 
-          height={HEIGHT}
-          on:click={handleContourClick}
-          class={isLoading ? 'loading' : ''}
-        ></canvas>
+    <!-- Responsive Grid Layout -->
+    <div class="responsive-grid {isVertical ? 'vertical' : 'horizontal'}">
+      <!-- For horizontal screens, maintain original layout -->
+      {#if !isVertical}
+      <div class="panel">
+        <h2>Asteroid Visualization</h2>
+        <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
       </div>
-        <div class="instruction">
-          <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
+
+      <div class="panel">
+        <h2>Flyby distance past Earth</h2>
+        <div class="contour-container">
+          <canvas 
+            bind:this={contourCanvas} 
+            width={WIDTH + 60} 
+            height={HEIGHT}
+            on:click={handleContourClick}
+            class={isLoading ? 'loading' : ''}
+          ></canvas>
         </div>
-        <div class="button-group">
+
+          <div class="button-group">
+            {#if samples.length > 0}
+              <button on:click={clearSamples}>Clear Samples</button>
+            {/if}
+            <button on:click={toggleEnergyFunction} class="info-button">
+              {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
+            </button>
+          </div>
+
+          <div class="instruction">
+            <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+          </div>
+        </div>
+      {:else}
+        <!-- For vertical screens, use the 2x2 grid layout -->
+          <!-- A_11: Energy Plot -->
+          <div class="grid-item energy-plot">
+            <h2>Flyby distance past Earth</h2>
+            <div class="contour-container">
+              <canvas 
+                bind:this={contourCanvas} 
+                width={WIDTH + 60} 
+                height={HEIGHT} 
+                on:click={handleContourClick}
+                class={isLoading ? 'loading' : ''}
+              ></canvas>
+            </div>
+          </div>
+
+      <!-- A_12: Buttons (Show Energy Button and Clear Samples) -->
+      <div class="grid-item buttons">
+        <!-- Move the instructional text here -->
+        <div class="instruction">
+          <p>Click directly on the plot to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+        </div>
+
+        <!-- Buttons -->
+        <div class="vertical-button-group">
           {#if samples.length > 0}
             <button on:click={clearSamples}>Clear Samples</button>
           {/if}
@@ -610,101 +713,238 @@
             {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
           </button>
         </div>
-        <div class="instruction">
-          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
-        </div>
-        <div class="button-group">
-          <button class="info-button" on:click={goToHomePage}>
-            <span>Go back</span>
-          </button>
       </div>
-    </div>
+
+      <!-- A_21: Asteroid Panel -->
+      <div class="grid-item molecule-panel">
+        <h2>Asteroid Visualization</h2>
+        <canvas bind:this={canvas} width={WIDTH} height={HEIGHT}></canvas>
+      </div>
+
+      <!-- A_22: Asteroid instructions -->
+      <!-- <div class="grid-item angle-sliders">
+        <div class="vertical-control-panel">
+          <div class="compact-slider-container">
+
+        </div>
+      </div> -->
+    <!-- </div> -->
+
+      {/if}
   </div>
+
+    <!-- Go back button moved here -->
+    <div class="button-group" style="margin-top: 20px; text-align: center;">
+      <button class="info-button" on:click={goToHomePage}>
+        <span>Go back</span>
+      </button>
+    </div>
+
 </main>
 
 <style>
+/* Responsive Grid Layout */
+.responsive-grid {
+    display: grid;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  /* Horizontal layout (default) */
+  .responsive-grid.horizontal {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  /* Vertical layout - 2x2 grid */
+  .responsive-grid.vertical {
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas: 
+      "energy-plot buttons"
+      "molecule-panel angle-sliders";
+  }
+  
+  /* Grid items */
+  .grid-item {
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e8e8e8;
+  }
+  
+  /* Specific grid item styles for vertical layout */
+  .responsive-grid.vertical .energy-plot {
+    grid-area: energy-plot;
+  }
+  
+  .responsive-grid.vertical .buttons {
+    grid-area: buttons;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .responsive-grid.vertical .molecule-panel {
+    grid-area: molecule-panel;
+  }
+  
+  .responsive-grid.vertical .angle-sliders {
+    grid-area: angle-sliders;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  /* Vertical orientation styles */
+  .vertical-button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+    justify-content: center;
+  }
+  
+  .vertical-button-group button {
+    width: 100%;
+    margin: 0;
+  }
+  
+  .vertical-control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+    justify-content: center;
+    background-color: #f5f5f5;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .compact-slider-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .compact-slider-container label {
+    font-weight: bold;
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+  
+  .compact-slider-container input {
+    width: 100%;
+    max-width: 120px;
+  }
+  
+  .compact-slider-container span {
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Responsive adjustments for small screens */
+  @media (max-width: 768px) {
+    .responsive-grid.vertical {
+      grid-template-columns: 1fr;
+      grid-template-areas: 
+        "energy-plot"
+        "buttons"
+        "molecule-panel"
+        "angle-sliders";
+    }
+    
+    .compact-slider-container input {
+      max-width: 100%;
+    }
+  }
+  
+  /* Maintain proper sizing for visualizations */
+  .responsive-grid.vertical .molecule-visualization {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .responsive-grid.vertical .contour-container canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Maintain aspect ratio for visualizations */
+  .molecule-visualization {
+    max-width: 100%;
+    height: auto !important;
+    aspect-ratio: 1 / 1;
+  }
+  
+  .contour-container canvas {
+    max-width: 100%;
+    height: auto !important;
+  }
+  
+  /* Bars Container */
+  .bars-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px; /* Adjust the gap between the bars as needed */
+      margin: 20px 0;
+  }
 
   /* Live Bar Container */
   .live-bar-container {
-    margin: 20px 0;
+      flex: 1; /* Allow the live bar to take up available space */
   }
 
-  /* Lives Label */
-  .lives-label {
-    font-size: 18px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 5px;
-    text-align: center;
+  /* Score Bar Container */
+  .score-bar-container {
+      flex: 1; /* Allow the score bar to take up available space */
   }
 
-  /* Live Bar Styles */
-  .live-bar {
-    position: relative;
-    height: 30px;
-    background: #eee;
-    border-radius: 15px;
-    overflow: visible;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  /* Existing styles for live-bar, score-bar, etc. */
+  .live-bar, .score-bar {
+      position: relative;
+      height: 30px;
+      background: #eee;
+      border-radius: 15px;
+      overflow: visible;
+      box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .lives-remaining, .score-value {
+      height: 100%;
+      transition: width 0.3s ease;
+      border-radius: 15px 0 0 15px;
   }
 
   .lives-remaining {
-    height: 100%;
-    background: #ff4444;
-    transition: width 0.3s ease;
-    border-radius: 15px 0 0 15px;
+      background: #ff4444;
+  }
+
+  .score-value {
+      background: #FFD700;
+  }
+
+  .heart, .star {
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      transition: left 0.3s ease;
   }
 
   .heart {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px;
-    transition: left 0.3s ease;
-    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+      color: #ff4444;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
   }
 
-  /* Score Container */
-  .score-bar-container {
-    margin: 20px 0;
-  }
-
-  /* Score Label */
-  .score-label {
-    font-size: 18px;
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 5px;
-    text-align: center;
-  }
-
-  /* Score Bar */
-  .score-bar {
-    position: relative;
-    height: 30px;
-    background: #eee;
-    border-radius: 15px;
-    overflow: visible;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Score Value */
-  .score-value {
-    height: 100%;
-    background: #FFD700;
-    transition: width 0.3s ease-in-out;
-    border-radius: 15px 0 0 15px;
-  }
-
-  /* Star Indicator */
   .star {
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 24px;
-    color: #FFD700;
-    transition: left 0.3s ease-in-out;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      color: #FFD700;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
     /* Game Ended Popup Styles */

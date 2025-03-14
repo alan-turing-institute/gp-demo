@@ -494,35 +494,55 @@
     max-width: 800px;
   }
   
-  .card-img-side {
-    width: 30%;
-    min-width: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
-    padding: 20px;
+  /* Update these styles in your existing CSS */
+
+.card-img-side {
+  width: 30%;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+  padding: 20px;
+  overflow: hidden; /* Prevent image overflow */
+}
+
+.autoemulate-img-container {
+  background: linear-gradient(rgba(60, 99, 130, 0.6), rgba(60, 99, 130, 0.2));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.autoemulate-logo {
+  width: 100%; /* Change from 90% to 100% */
+  max-width: 100%; /* Ensure image doesn't exceed container */
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
+  transition: all 0.3s ease; /* Smooth transition when resizing */
+}
+
+@media (max-width: 768px) {
+  .card-horizontal {
+    flex-direction: column;
   }
   
-  .autoemulate-img-container {
-    background: linear-gradient(rgba(60, 99, 130, 0.6), rgba(60, 99, 130, 0.2));
+  .card-img-side {
+    width: 100%;
+    min-height: 180px; /* Use min-height instead of fixed height */
+    padding: 15px; /* Slightly reduce padding on mobile */
   }
   
   .autoemulate-logo {
-    width: 90%;
-    height: auto;
-    object-fit: contain;
-    z-index: 1;
+    max-width: 80%; /* Slightly smaller on mobile for better appearance */
   }
-  
-  @media (max-width: 768px) {
-    .card-horizontal {
-      flex-direction: column;
-    }
-    
-    .card-img-side {
-      width: 100%;
-      height: 180px;
-    }
+}
+
+/* Add this for even smaller screens */
+@media (max-width: 480px) {
+  .card-img-side {
+    min-height: 150px;
   }
+}
 </style>
