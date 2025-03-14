@@ -4,7 +4,7 @@
   import * as math from 'mathjs';
 
   function goToHomePage() {
-    window.location.href = 'https://alan-turing-institute.github.io/gp-demo/'; // Adjust this URL if your home page is at a different path
+    window.location.href = '/'; // Adjust this URL if your home page is at a different path
   }
 
   // Color palette - elegant muted colors

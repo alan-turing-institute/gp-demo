@@ -84,14 +84,14 @@
           <div class="card">
               <div class="card-img asteroid-img"></div>
               <div class="card-content">
-              <a href="https://alan-turing-institute.github.io/gp-demo/asteroid" class="btn">Launch Asteroid App</a>
+              <a href="/asteroid/" class="btn">Launch Asteroid App</a>
               </div>
           </div>
           
           <div class="card">
               <div class="card-img molecule-img"></div>
               <div class="card-content">
-              <a href="https://alan-turing-institute.github.io/gp-demo/molecule" class="btn">Launch Molecule App</a>
+              <a href="/molecule/" class="btn">Launch Molecule App</a>
               </div>
           </div>          
           </div>
@@ -102,7 +102,7 @@
         <div class="cards">
           <div class="card card-horizontal">
             <div class="card-img-side autoemulate-img-container">
-              <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/logogaussian-2.png" alt="AutoEmulate Logo" class="autoemulate-logo">
+              <img src="/logogaussian-2.png" alt="AutoEmulate Logo" class="autoemulate-logo">
             </div>
             <div class="card-content">
               <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators for accelerating complex simulations.</p>
@@ -343,7 +343,7 @@
   }
   
   .asteroid-img {
-  background: url('https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/asteroid.jpg');
+  background: url('/asteroid.jpg');
   background-size: contain; /* Ensures the entire image fits within the container */
   background-position: center; /* Centers the image */
   background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -352,7 +352,7 @@
   position: relative;
 }
   .molecule-img {
-  background:url('https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/mol.png');
+  background:url('/mol.png');
   background-size: contain; /* Fits the entire image within the container */
   background-position: center;
   background-repeat: no-repeat;
