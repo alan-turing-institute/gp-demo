@@ -79,7 +79,6 @@
       isVertical = window.innerHeight > window.innerWidth;
     }
     onMount(() => {
-    loadState();
     calculateEnergyRange();
     drawAstroid();
     drawContourPlot();
@@ -88,7 +87,6 @@
     window.addEventListener('resize', checkOrientation);
     
     return () => {
-      saveState();
       window.removeEventListener('resize', checkOrientation);
     };
   });
