@@ -620,10 +620,10 @@
         <div class="lives-label">Guesses left {lives}/20</div>
         <div class="live-bar">
             <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
-            <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">❤️</span>
+            <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">💷</span>
         </div>
     </div>
-
+    <div></div>
     <!-- Score Bar -->
     <div class="score-bar-container">
         <div class="score-label">Score: <span id="score-percentage">{(score * 100).toFixed(0)}%</span></div>
@@ -922,7 +922,7 @@
   }
 
   .lives-remaining {
-      background: #ff4444;
+      background:rgb(23, 181, 23);
   }
 
   .score-value {
@@ -938,7 +938,7 @@
   }
 
   .heart {
-      color: #ff4444;
+      color: green;
       filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
   }
 
