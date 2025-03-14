@@ -5,14 +5,14 @@
 		<link rel="icon" href="./favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		
-		<link href="./_app/immutable/assets/0.BHCYWvD2.css" rel="stylesheet">
+		<link href="./_app/immutable/assets/0.C0yx224I.css" rel="stylesheet">
 		<link href="./_app/immutable/assets/7.CauupUQ8.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.gME5dtlU.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/x-b8HcTu.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/start.DieJkbJy.js">
+		<link rel="modulepreload" href="./_app/immutable/chunks/Dc6Vz03L.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/BJ4irGt7.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/DeaZkGwt.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/Cpzjerpz.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.CCLzyDkm.js">
+		<link rel="modulepreload" href="./_app/immutable/entry/app.Jm3dgi9P.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/C1FmrZbK.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/CvaqDwXv.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/cGtBC6Qd.js">
@@ -20,8 +20,8 @@
 		<link rel="modulepreload" href="./_app/immutable/chunks/6XXKwe28.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/hSxeejVy.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/CUY-1DrG.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.5cCMrks9.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/7.GJxxptrZ.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/0.D-VOxwmh.js">
+		<link rel="modulepreload" href="./_app/immutable/nodes/7.ibB7sE15.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/7LKkzqbz.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/B9r3SdpA.js">
 		<link rel="modulepreload" href="./_app/immutable/chunks/dhIx7U5O.js">
@@ -30,19 +30,19 @@
 		<link rel="modulepreload" href="./_app/immutable/chunks/PBAI84v4.js">
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents"><!--[--><!--[--><!----><!----><main class="svelte-y22l1a"><h1 class="svelte-y22l1a">Protein Explorer</h1> <div class="instruction svelte-y22l1a"><p class="svelte-y22l1a">The most stable configuration of a molecule is found by computing its minimum energy through complex and costly quantum mechanical equations. Training an emulator provides a cheaper, sufficiently accurate, and scalable alternative.</p> <p class="svelte-y22l1a">💻 Lets train an emulator that can predict the energy landscape</p> <p class="svelte-y22l1a">💷 You have a budget to run 20 simulations to train your emulator.</p> <p class="svelte-y22l1a">📐 Adjust the Φ and Ψ angles to explore the energy landscape of the molecule.</p></div> <div class="bars-container svelte-y22l1a"><div class="live-bar-container svelte-y22l1a"><div class="lives-label">Guesses left 20/20</div> <div class="live-bar svelte-y22l1a"><div class="lives-remaining svelte-y22l1a" style="width: 100%"></div> <span class="heart svelte-y22l1a" style="left: 100%">💷</span></div></div> <div></div> <div class="score-bar-container svelte-y22l1a"><div class="score-label">Score: <span id="score-percentage">0%</span></div> <div class="score-bar svelte-y22l1a"><div class="score-value svelte-y22l1a" id="score-bar" style="width: 0%"></div> <span class="star svelte-y22l1a" id="score-star" style="left: 0%">⭐</span></div></div></div> <!--[!--><!--]--> <div class="level-container svelte-y22l1a"><label for="level" class="level-label svelte-y22l1a">Difficulty:</label> <select id="level" class="svelte-y22l1a"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option></select></div> <div class="responsive-grid horizontal svelte-y22l1a"><!--[--><div class="panel svelte-y22l1a"><h2 class="svelte-y22l1a">Backbone Angles</h2> <div class="molecule-visualization svelte-y22l1a" style="width: 400px; height: 400px;"><main class="svelte-13sjxqj"><div class="viewer-container svelte-13sjxqj"><div id="viewer" class="svelte-13sjxqj"></div></div></main><!----></div> <div class="control-panel svelte-y22l1a"><div class="slider-container svelte-y22l1a"><label for="angle" class="svelte-y22l1a">Ψ Angle (degrees):</label> <input type="range" id="angle" value="0" min="0" max="360" step="1" class="svelte-y22l1a"> <span class="svelte-y22l1a">0°</span></div> <div class="slider-container svelte-y22l1a"><label for="phiAngle" class="svelte-y22l1a">Φ Angle (degrees):</label> <input type="range" id="phiAngle" value="0" min="0" max="360" step="1" class="svelte-y22l1a"> <span class="svelte-y22l1a">0°</span></div> <div class="instruction svelte-y22l1a"><p class="svelte-y22l1a">Use the gliders view the molecule at various angles.</p> <p class="svelte-y22l1a">Carbon-Nitrogen bond is your axis of rotation</p></div></div></div> <div class="panel svelte-y22l1a"><h2 class="svelte-y22l1a">Energy Landscape</h2> <div class="contour-container svelte-y22l1a"><canvas width="460" height="400" class="svelte-y22l1a"></canvas> <div class="side_instruction svelte-y22l1a"><p class="svelte-y22l1a">Click directly on the plot</p> <div class="arrow-down svelte-y22l1a"></div> <p class="svelte-y22l1a">Sample points with Φ and Ψ</p> <div class="arrow-down svelte-y22l1a"></div> <p class="svelte-y22l1a">Run the simulation</p> <div class="arrow-down svelte-y22l1a"></div> <p class="svelte-y22l1a">Update the emulator model</p></div></div> <div class="button-group svelte-y22l1a"><!--[!--><!--]--> <button class="info-button svelte-y22l1a">Show Simulator Function</button></div></div><!--]--></div> <div class="button-group svelte-y22l1a" style="margin-top: 20px; text-align: center;"><button class="info-button svelte-y22l1a"><span>Go back</span></button></div></main><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
+		<div style="display: contents"><!--[--><!--[--><!----><!----><main class="svelte-y22l1a"><h1 style="display: inline-flex; align-items: center; font-size: 3rem;" class="svelte-y22l1a"><img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/asteroidtext/static/mol.png" alt="Asteroid Explorer Icon" style="width: 100px; height: 100px; margin-right: 15px; border-radius: 0; box-shadow: none;"> Protein Explorer</h1> <div class="instruction svelte-y22l1a"><p class="svelte-y22l1a">The most stable configuration of a molecule is found by computing its minimum energy through complex and costly quantum mechanical equations. Training an emulator provides a cheaper, sufficiently accurate, and scalable alternative.</p> <p class="svelte-y22l1a">💻 Lets train an emulator that can predict the energy landscape</p> <p class="svelte-y22l1a">💷 You have a budget to run 20 simulations to train your emulator.</p> <p class="svelte-y22l1a">📐 Adjust the Φ and Ψ angles to explore the energy landscape of the molecule.</p></div> <div class="bars-container svelte-y22l1a"><div class="live-bar-container svelte-y22l1a"><div class="lives-label">Guesses left 20/20</div> <div class="live-bar svelte-y22l1a"><div class="lives-remaining svelte-y22l1a" style="width: 100%"></div> <span class="heart svelte-y22l1a" style="left: 100%">💷</span></div></div> <div></div> <div class="score-bar-container svelte-y22l1a"><div class="score-label">Score: <span id="score-percentage">0%</span></div> <div class="score-bar svelte-y22l1a"><div class="score-value svelte-y22l1a" id="score-bar" style="width: 0%"></div> <span class="star svelte-y22l1a" id="score-star" style="left: 0%">⭐</span></div></div></div> <!--[!--><!--]--> <div class="level-container svelte-y22l1a"><label for="level" class="level-label svelte-y22l1a">Difficulty:</label> <select id="level" class="svelte-y22l1a"><option value="1">Level 1</option><option value="2">Level 2</option><option value="3">Level 3</option></select></div> <div class="responsive-grid horizontal svelte-y22l1a"><!--[--><div class="panel svelte-y22l1a"><h2 class="svelte-y22l1a">Backbone Angles</h2> <div class="molecule-visualization svelte-y22l1a" style="width: 400px; height: 400px;"><main class="svelte-13sjxqj"><div class="viewer-container svelte-13sjxqj"><div id="viewer" class="svelte-13sjxqj"></div></div></main><!----></div> <div class="control-panel svelte-y22l1a"><div class="slider-container svelte-y22l1a"><label for="angle" class="svelte-y22l1a">Ψ Angle (degrees):</label> <input type="range" id="angle" value="0" min="0" max="360" step="1" class="svelte-y22l1a"> <span class="svelte-y22l1a">0°</span></div> <div class="slider-container svelte-y22l1a"><label for="phiAngle" class="svelte-y22l1a">Φ Angle (degrees):</label> <input type="range" id="phiAngle" value="0" min="0" max="360" step="1" class="svelte-y22l1a"> <span class="svelte-y22l1a">0°</span></div> <div class="instruction svelte-y22l1a"><p class="svelte-y22l1a">Use the gliders view the molecule at various angles.</p> <p class="svelte-y22l1a">Carbon-Nitrogen bond is your axis of rotation</p></div></div></div> <div class="panel svelte-y22l1a"><h2 class="svelte-y22l1a">Energy Landscape</h2> <div class="contour-container svelte-y22l1a"><canvas width="460" height="400" class="svelte-y22l1a"></canvas> <div class="side_instruction svelte-y22l1a"><p class="svelte-y22l1a">Click directly on the plot</p> <div class="arrow-down svelte-y22l1a"></div> <p class="svelte-y22l1a">Sample points with Φ and Ψ</p> <div class="arrow-down svelte-y22l1a"></div> <p class="svelte-y22l1a">Run the simulation</p> <div class="arrow-down svelte-y22l1a"></div> <p class="svelte-y22l1a">Update the emulator model</p></div></div> <div class="button-group svelte-y22l1a"><!--[!--><!--]--> <button class="info-button svelte-y22l1a">Show Simulator Function</button></div></div><!--]--></div> <div class="button-group svelte-y22l1a" style="margin-top: 20px; text-align: center;"><button class="info-button svelte-y22l1a"><span>Go back</span></button></div></main><!----><!----><!----><!--]--> <!--[!--><!--]--><!--]-->
 			
 			<script>
 				{
-					__sveltekit_1834vqz = {
+					__sveltekit_12hhwkd = {
 						base: new URL(".", location).pathname.slice(0, -1)
 					};
 
 					const element = document.currentScript.parentElement;
 
 					Promise.all([
-						import("./_app/immutable/entry/start.gME5dtlU.js"),
-						import("./_app/immutable/entry/app.CCLzyDkm.js")
+						import("./_app/immutable/entry/start.DieJkbJy.js"),
+						import("./_app/immutable/entry/app.Jm3dgi9P.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 7],
