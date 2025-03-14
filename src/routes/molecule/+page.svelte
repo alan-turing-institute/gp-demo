@@ -687,14 +687,14 @@ function handleChange(event) {
   
   <!-- Game Ended Popup -->
   {#if gameEnded}
-    <div class="game-ended-popup">
-      <div class="popup-content">
-        <h2>Game Ended</h2>
-        <p>You've used all your lives!</p>
-        <p>Final score: {(score * 100).toFixed(0)}%</p>
-        <button on:click={resetGame}>Play Again</button>
-      </div>
+  <div class="game-ended-popup">
+    <div class="popup-content">
+      <h2>Game Ended</h2>
+      <p>You have used all your budget!</p>
+      <p>Final score: {(score * 100).toFixed(0)}%</p>
+      <button on:click={resetGame}>Play Again</button>
     </div>
+  </div>
   {/if}
 
   <div class="level-container">

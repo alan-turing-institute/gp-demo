@@ -603,16 +603,20 @@
 </script>
 
 <main>
-    <h1>Asteroid Explorer</h1>
+  <h1 style="display: flex; align-items: center; font-size: 3rem;">
+    <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
+      <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/asteroidtext/static/asteroid.png" alt="Asteroid Explorer Icon" style="width: 400%; height: 400%; object-fit: contain; object-position: center;" />
+    </div>
+    <span style="margin-left: 15px;">Asteroid Explorer</span>
+  </h1>
 
     <div class="instruction">
-      <p>Flyby distance is the closest approach distance given an object’s hyperbolic speed and impact parameter. A value of 0 indicates a collision with Earth.</p>
+      <p> Calculating the trajectory of celestial bodies like asteroids or comets approaching Earth is costly and time-consuming due to gravitational interactions, relativistic effects, and observational uncertainties. Training an emulator offers a cheaper and sufficiently accurate alternative. </p>
+      <p>💻 Lets train an emulator that can predict if an asteroid will coloide with the Earth.</p>
+      <p>💷 You have a budget to run 20 simulations to train your emulator.</p>
+      <p>📐 Adjust the velocity and the impact parameter to explore the Flyby distance map.</p>
     </div>
-
-    <div class="instruction">
-      <p class="highlight">Your goal is to train an emulator that accurately predicts flyby distance using as few asteroid simulator runs as possible.</p>
-    </div>
-
+  
   <!-- Container for Lives and Score Bars -->
   <div class="bars-container">
     <!-- Live Bar -->
@@ -639,7 +643,7 @@
     <div class="game-ended-popup">
       <div class="popup-content">
         <h2>Game Ended</h2>
-        <p>You've used all your lives!</p>
+        <p>You have used all your budget!</p>
         <p>Final score: {(score * 100).toFixed(0)}%</p>
         <button on:click={resetGame}>Play Again</button>
       </div>
@@ -677,8 +681,14 @@
             </button>
           </div>
 
-          <div class="instruction">
-            <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+          <div class="side_instruction">
+            <p>Click directly on the plot</p>
+            <div class="arrow-down"></div> <!-- Downward arrow -->
+            <p>Sample points with velocity and impact factor </p>
+            <div class="arrow-down"></div> <!-- Downward arrow -->
+            <p>Run the simulation</p>
+            <div class="arrow-down"></div> <!-- Downward arrow -->
+            <p>Update the emulator model</p>
           </div>
         </div>
       {:else}
@@ -700,10 +710,15 @@
       <!-- A_12: Buttons (Show Energy Button and Clear Samples) -->
       <div class="grid-item buttons">
         <!-- Move the instructional text here -->
-        <div class="instruction">
-          <p>Click directly on the plot to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
+        <div class="side_instruction">
+          <p>Click directly on the plot</p>
+          <div class="arrow-down"></div> <!-- Downward arrow -->
+          <p>Sample points with velocity and impact factor </p>
+          <div class="arrow-down"></div> <!-- Downward arrow -->
+          <p>Run the simulation</p>
+          <div class="arrow-down"></div> <!-- Downward arrow -->
+          <p>Update the emulator model</p>
         </div>
-
         <!-- Buttons -->
         <div class="vertical-button-group">
           {#if samples.length > 0}
@@ -1214,4 +1229,38 @@
     margin: 8px 0;
     line-height: 1.5;
   }
+
+  .instruction {
+  text-align: left; /* Align text to the left */
+  margin: 0 auto;   /* Remove auto margin if it was centering the container */
+  max-width: 100%;  /* Ensure the container doesn't exceed its parent's width */
+  padding: 10px;    /* Optional: Add padding for better spacing */
+}
+
+.instruction p {
+  margin: 10px 0;   /* Add spacing between paragraphs */
+}
+
+  /* Additional styling for the instructional text */
+  .side_instruction p {
+    text-align: center; /* Center-align the text */
+    margin: 10px 0; /* Add spacing around the text */
+  }
+ /* Style for the downward arrow */
+ .arrow-down {
+    width: 0; 
+    height: 0; 
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid black; /* Arrow color */
+    margin: 10px auto; /* Center the arrow and add spacing */
+  }
+  h1 img {
+  vertical-align: middle;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 50%; /* Optional: Makes the image circular */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Optional: Adds a subtle shadow */
+}
 </style>
