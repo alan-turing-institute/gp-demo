@@ -343,7 +343,7 @@
   }
   
   .asteroid-img {
-  background: url('https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/firstpagepics/static/asteroid.jpg');
+  background: url('https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/asteroid.jpg');
   background-size: contain; /* Ensures the entire image fits within the container */
   background-position: center; /* Centers the image */
   background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -352,7 +352,7 @@
   position: relative;
 }
   .molecule-img {
-  background:url('https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/firstpagepics/static/mol.png');
+  background:url('https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/mol.png');
   background-size: contain; /* Fits the entire image within the container */
   background-position: center;
   background-repeat: no-repeat;
