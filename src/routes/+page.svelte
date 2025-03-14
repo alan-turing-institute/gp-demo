@@ -106,7 +106,7 @@
             </div>
             <div class="card-content">
               <p>We are developing a cross-domain toolkit to automatically build AI-powered emulators for accelerating complex simulations.</p>
-              <a href="https://alan-turing-institute.github.io/autoemulate/" class="btn">Website</a>
+              <a href="https://www.autoemulate.com/" class="btn">Website</a>
             </div>
           </div>
         </div>
