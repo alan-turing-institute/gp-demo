@@ -360,32 +360,13 @@
   }
   
   .molecule-img {
-    background: linear-gradient(rgba(56, 173, 169, 0.8), rgba(56, 173, 169, 0.4)), url(/api/placeholder/350/180);
-    position: relative;
-  }
-  
-  .molecule-img::before,
-  .molecule-img::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-  }
-  
-  .molecule-img::before {
-    width: 60px;
-    height: 60px;
-    background: var(--accent);
-    top: 60px;
-    left: 120px;
-  }
-  
-  .molecule-img::after {
-    width: 60px;
-    height: 60px;
-    background: var(--secondary);
-    top: 60px;
-    left: 170px;
-  }
+  background: linear-gradient(rgba(56, 173, 169, 0.8), rgba(56, 173, 169, 0.4)), 
+              url('https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/firstpagepics/static/mol.png');
+  background-size: cover; /* Ensures the image covers the container */
+  background-position: center; /* Centers the image */
+  height: 180px; /* Sets a fixed height for the container */
+  position: relative; /* Required for positioning child elements */
+}
   
   .card-content {
     padding: 25px;
