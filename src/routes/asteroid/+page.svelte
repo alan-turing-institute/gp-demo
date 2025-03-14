@@ -605,7 +605,7 @@
 <main>
 
   <h1 style="display: inline-flex; align-items: center; font-size: 3rem;">
-    <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/asteroidtext/static/asteroid.png" alt="Asteroid Explorer Icon" style="width: 80px; height: 80px; margin-right: 15px; border-radius: 0; box-shadow: none;" />
+    <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/asteroid.png" alt="Asteroid Explorer Icon" style="width: 80px; height: 80px; margin-right: 15px; border-radius: 0; box-shadow: none;" />
     Asteroid Explorer
   </h1>
 

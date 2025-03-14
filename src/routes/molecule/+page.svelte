@@ -656,7 +656,7 @@ function handleChange(event) {
 <main>
 
   <h1 style="display: inline-flex; align-items: center; font-size: 3rem;">
-    <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/asteroidtext/static/mol.png" alt="Asteroid Explorer Icon" style="width: 100px; height: 100px; margin-right: 15px; border-radius: 0; box-shadow: none;" />
+    <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/main/static/mol.png" alt="Asteroid Explorer Icon" style="width: 100px; height: 100px; margin-right: 15px; border-radius: 0; box-shadow: none;" />
     Protein Explorer
   </h1>
 
