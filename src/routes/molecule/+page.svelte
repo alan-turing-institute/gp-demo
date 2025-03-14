@@ -728,6 +728,11 @@ function handleChange(event) {
             <input type="range" id="phiAngle" bind:value={phi} min="0" max="360" step="1" />
             <span>{phi}°</span>
           </div>
+      <!-- Move the instructional text here -->
+      <div class="instruction">
+        <p> Use the gliders view the molecule at various angles. </p>
+        <p> Carbon-Nitrogen bond is your axis of rotation </p>
+      </div>
         </div>
       </div>
 
@@ -741,6 +746,15 @@ function handleChange(event) {
             on:click={handleContourClick}
             class={isLoading ? 'loading' : ''}
           ></canvas>
+          <div class="side_instruction">
+            <p>Click directly on the plot</p>
+            <div class="arrow-down"></div> <!-- Downward arrow -->
+            <p>Sample points with Φ and Ψ </p>
+            <div class="arrow-down"></div> <!-- Downward arrow -->
+            <p>Run the simulation</p>
+            <div class="arrow-down"></div> <!-- Downward arrow -->
+            <p>Update the emulator model</p>
+          </div>
         </div>
                 
         <div class="button-group">
@@ -752,6 +766,7 @@ function handleChange(event) {
           </button>
         </div>
       </div>
+
     {:else}
       <!-- For vertical screens, use the 2x2 grid layout -->
       <!-- A_11: Energy Plot -->
