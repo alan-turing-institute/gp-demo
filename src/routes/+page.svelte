@@ -343,50 +343,23 @@
   }
   
   .asteroid-img {
-    background: linear-gradient(rgba(60, 99, 130, 0.8), rgba(60, 99, 130, 0.4)), url(/api/placeholder/350/180);
-    position: relative;
-  }
-  
-  .asteroid-img::before {
-    content: "";
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: radial-gradient(#eaeaea, #bbb);
-    top: 50px;
-    left: 135px;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-  }
-  
+  background: url('https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/firstpagepics/static/asteroid.jpg');
+  background-size: contain; /* Ensures the entire image fits within the container */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  height: 180px; /* Fixed height for the container */
+  width: 100%; /* Ensures the container takes up the full width of its parent */
+  position: relative;
+}
   .molecule-img {
-    background: linear-gradient(rgba(56, 173, 169, 0.8), rgba(56, 173, 169, 0.4)), url(/api/placeholder/350/180);
-    position: relative;
-  }
-  
-  .molecule-img::before,
-  .molecule-img::after {
-    content: "";
-    position: absolute;
-    border-radius: 50%;
-  }
-  
-  .molecule-img::before {
-    width: 60px;
-    height: 60px;
-    background: var(--accent);
-    top: 60px;
-    left: 120px;
-  }
-  
-  .molecule-img::after {
-    width: 60px;
-    height: 60px;
-    background: var(--secondary);
-    top: 60px;
-    left: 170px;
-  }
-  
+  background:url('https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/firstpagepics/static/mol.png');
+  background-size: contain; /* Fits the entire image within the container */
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 180px;
+  width: 100%;
+  position: relative;
+}
   .card-content {
     padding: 25px;
     flex: 1;
