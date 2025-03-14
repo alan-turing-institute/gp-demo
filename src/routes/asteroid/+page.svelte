@@ -82,7 +82,9 @@
     loadState();
     calculateEnergyRange();
     drawAstroid();
-    drawContourPlot();
+    setTimeout(() => {
+      drawContourPlot();
+    }, 100);
     
     checkOrientation();
     window.addEventListener('resize', checkOrientation);

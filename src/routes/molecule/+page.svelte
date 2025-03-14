@@ -636,7 +636,9 @@ function toggleEnergyFunction() {
 onMount(() => {
   calculateEnergyRange();
   drawMolecule();
-  drawContourPlot();
+  setTimeout(() => {
+    drawContourPlot();
+  }, 100);
 });
 
 $: {
