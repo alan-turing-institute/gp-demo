@@ -603,12 +603,13 @@
 </script>
 
 <main>
-  <h1 style="display: flex; align-items: center; font-size: 3rem;">
-    <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #f0f0f0;">
-      <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/asteroidtext/static/asteroid.png" alt="Asteroid Explorer Icon" style="width: 400%; height: 400%; object-fit: contain; object-position: center;" />
-    </div>
-    <span style="margin-left: 15px;">Asteroid Explorer</span>
+
+  <h1 style="display: inline-flex; align-items: center; font-size: 3rem;">
+    <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/asteroidtext/static/asteroid.png" alt="Asteroid Explorer Icon" style="width: 80px; height: 80px; margin-right: 15px; border-radius: 0; box-shadow: none;" />
+    Asteroid Explorer
   </h1>
+
+
 
     <div class="instruction">
       <p> Calculating the trajectory of celestial bodies like asteroids or comets approaching Earth is costly and time-consuming due to gravitational interactions, relativistic effects, and observational uncertainties. Training an emulator offers a cheaper and sufficiently accurate alternative. </p>
@@ -621,7 +622,7 @@
   <div class="bars-container">
     <!-- Live Bar -->
     <div class="live-bar-container">
-        <div class="lives-label">Guesses left {lives}/20</div>
+        <div class="lives-label">Budget left {lives}/20</div>
         <div class="live-bar">
             <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
             <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">💷</span>

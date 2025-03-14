@@ -654,7 +654,11 @@ function handleChange(event) {
 
 </script>
 <main>
-  <h1>Protein Explorer</h1>
+
+  <h1 style="display: inline-flex; align-items: center; font-size: 3rem;">
+    <img src="https://raw.githubusercontent.com/alan-turing-institute/gp-demo/refs/heads/asteroidtext/static/mol.png" alt="Asteroid Explorer Icon" style="width: 100px; height: 100px; margin-right: 15px; border-radius: 0; box-shadow: none;" />
+    Protein Explorer
+  </h1>
 
   <div class="instruction">
     <p>The most stable configuration of a molecule is found by computing its minimum energy through complex and costly quantum mechanical equations. Training an emulator provides a cheaper, sufficiently accurate, and scalable alternative.</p>
