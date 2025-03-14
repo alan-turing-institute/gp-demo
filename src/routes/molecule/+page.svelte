@@ -6,7 +6,7 @@ import * as d3 from 'd3';
   
 
   function goToHomePage() {
-    window.location.href = '/'; // Adjust this URL if your home page is at a different path
+    window.location.href = 'https://alan-turing-institute.github.io/gp-demo/'; // Adjust this URL if your home page is at a different path
   }
 
   // State variables
