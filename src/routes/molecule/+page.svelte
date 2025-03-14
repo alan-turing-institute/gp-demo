@@ -657,14 +657,13 @@ function handleChange(event) {
 <main>
   <h1>Protein Explorer</h1>
 
-
   <div class="instruction">
-    <p>Rotating backbone angles changes the protein's shape, affecting its stability. Lower energy regions correspond to more stable conformations.</p>
+    <p>The most stable configuration of a molecule is found by computing its minimum energy through complex and costly quantum mechanical equations. Training an emulator provides a cheaper, sufficiently accurate, and scalable alternative.</p>
+    <p>💻 Lets train an emulator that can predict the energy landscape</p>
+    <p>💷 You have a budget to run 20 simulations to train your emulator.</p>
+    <p>📐 Adjust the Φ and Ψ angles to explore the energy landscape of the molecule.</p>
   </div>
 
-  <div class="instruction">
-    <p class="highlight">Your goal is to train an emulator that accurately predicts the energy function using as few protein simulator runs as possible.</p>
-  </div>
 
   <!-- Container for Lives and Score Bars -->
   <div class="bars-container">
@@ -753,10 +752,6 @@ function handleChange(event) {
             {showEnergyFunction ? 'Show Emulator Prediction' : 'Show Simulator Function'}
           </button>
         </div>
-        
-        <div class="instruction">
-          <p>Click directly on the plot above to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
-        </div>
       </div>
     {:else}
       <!-- For vertical screens, use the 2x2 grid layout -->
@@ -775,11 +770,18 @@ function handleChange(event) {
       </div>
       
       <!-- A_12: Buttons (Show Energy Button and Clear Samples) -->
-      <div class="grid-item buttons">
-        <!-- Move the instructional text here -->
-        <div class="instruction">
-          <p>Click directly on the plot to sample points. This will run the simulation and update the emulator model based on the simulator output.</p>
-        </div>
+  <!-- A_12: Buttons (Show Energy Button and Clear Samples) -->
+    <div class="grid-item buttons">
+      <!-- Move the instructional text here -->
+      <div class="side_instruction">
+        <p>Click directly on the plot</p>
+        <div class="arrow-down"></div> <!-- Downward arrow -->
+        <p>Sample points with Φ and Ψ </p>
+        <div class="arrow-down"></div> <!-- Downward arrow -->
+        <p>Run the simulation</p>
+        <div class="arrow-down"></div> <!-- Downward arrow -->
+        <p>Update the emulator model</p>
+      </div>
 
         <!-- Buttons -->
         <div class="vertical-button-group">
@@ -802,6 +804,12 @@ function handleChange(event) {
       
       <!-- A_22: Angle Sliders -->
       <div class="grid-item angle-sliders">
+
+      <!-- Move the instructional text here -->
+      <div class="instruction">
+        <p> Use the gliders view the molecule at various angles. </p>
+        <p> Carbon-Nitrogen bond is your axis of rotation </p>
+      </div>
         <div class="vertical-control-panel">
           <div class="compact-slider-container">
 
@@ -1363,5 +1371,30 @@ function handleChange(event) {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+  }
+  /* Style for the downward arrow */
+  .arrow-down {
+    width: 0; 
+    height: 0; 
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid black; /* Arrow color */
+    margin: 10px auto; /* Center the arrow and add spacing */
+  }
+  .instruction {
+  text-align: left; /* Align text to the left */
+  margin: 0 auto;   /* Remove auto margin if it was centering the container */
+  max-width: 100%;  /* Ensure the container doesn't exceed its parent's width */
+  padding: 10px;    /* Optional: Add padding for better spacing */
+}
+
+.instruction p {
+  margin: 10px 0;   /* Add spacing between paragraphs */
+}
+
+  /* Additional styling for the instructional text */
+  .side_instruction p {
+    text-align: center; /* Center-align the text */
+    margin: 10px 0; /* Add spacing around the text */
   }
 </style>
