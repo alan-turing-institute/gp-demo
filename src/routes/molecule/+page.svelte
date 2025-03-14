@@ -97,16 +97,13 @@ function saveState() {
   }
 
   onMount(() => {
-  loadState();
   calculateEnergyRange();
   drawMolecule();
   drawContourPlot();
   
   checkOrientation();
   window.addEventListener('resize', checkOrientation);
-  
   return () => {
-    saveState();
     window.removeEventListener('resize', checkOrientation);
   };
 });
