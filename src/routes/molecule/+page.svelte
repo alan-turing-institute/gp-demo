@@ -672,7 +672,7 @@ function handleChange(event) {
   <div class="bars-container">
       <!-- Live Bar -->
       <div class="live-bar-container">
-          <div class="lives-label">Guesses left {lives}/20</div>
+          <div class="lives-label">Budget left {lives}/20</div>
           <div class="live-bar">
               <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
               <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">💷</span>
@@ -734,7 +734,7 @@ function handleChange(event) {
           </div>
       <!-- Move the instructional text here -->
       <div class="instruction">
-        <p> Use the gliders view the molecule at various angles. </p>
+        <p> Use the gliders to view the molecule at various angles. </p>
         <p> Carbon-Nitrogen bond is your axis of rotation </p>
       </div>
         </div>
