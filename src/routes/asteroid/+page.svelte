@@ -30,12 +30,13 @@
   let angle = 5000; // initial impact parameter (km)
   let velocity = 3; // initial velocity (km/s)
   let samples = [];
+  const LIVES = 10;
   let gpPredictions = [];
   let canvas;
   let contourCanvas;
   let isLoading = false;
   let showEnergyFunction = false;
-  let lives = 20; // Add lives state
+  let lives = LIVES; // Add lives state
   let gameEnded = false; // Track if the game has ended
 
   // Constants for the flyby function
@@ -150,7 +151,7 @@
     samples = [];
     gpPredictions = [];
     drawContourPlot();
-    lives=20;
+    lives=LIVES;
     score=0;
   }
 
@@ -187,7 +188,7 @@
   }
 
   function resetGame() {
-    lives = 20;
+    lives = LIVES;
     score = 0;
     samples = [];
     gpPredictions = [];
@@ -614,7 +615,7 @@
     <div class="instruction">
       <p> Calculating the trajectory of celestial bodies like asteroids or comets approaching Earth is costly and time-consuming due to gravitational interactions, relativistic effects, and observational uncertainties. Training an emulator offers a cheaper and sufficiently accurate alternative. </p>
       <p>💻 Lets train an emulator that can predict if an asteroid will coloide with the Earth.</p>
-      <p>💷 You have a budget to run 20 simulations to train your emulator.</p>
+      <p>💷 You have a budget to run {LIVES} simulations to train your emulator.</p>
       <p>📐 Adjust the velocity and the impact parameter to explore the Flyby distance map.</p>
     </div>
   
@@ -622,10 +623,10 @@
   <div class="bars-container">
     <!-- Live Bar -->
     <div class="live-bar-container">
-        <div class="lives-label">Budget left {lives}/20</div>
+        <div class="lives-label">Budget left {lives}/{LIVES}</div>
         <div class="live-bar">
-            <div class="lives-remaining" style="width: {Math.max(0, (lives / 20) * 100)}%"></div>
-            <span class="heart" style="left: {Math.max(0, (lives / 20) * 100)}%">💷</span>
+            <div class="lives-remaining" style="width: {Math.max(0, (lives / LIVES) * 100)}%"></div>
+            <span class="heart" style="left: {Math.max(0, (lives / LIVES) * 100)}%">💷</span>
         </div>
     </div>
     <div></div>
